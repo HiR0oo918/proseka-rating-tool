@@ -15,7 +15,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -35,17 +34,21 @@ import { charts, DIFFICULTY_LABEL } from "@/lib/charts";
 import {
   bestAverage,
   clampJudgement,
+  DEFAULT_RATING_POINTS,
+  describeRatingPoint,
   effectiveConstant,
   EMPTY_JUDGEMENT,
   formatPercent,
   formatRating,
   isAllPerfect,
   isFullCombo,
-  rankMatch,
+  scoreJudgement,
   singleRating,
   type Chart,
   type Difficulty,
   type Judgement,
+  type RatingPoint,
+  type RatingPointMode,
 } from "@/lib/rating";
 import {
   loadConstants,
@@ -161,7 +164,7 @@ export function RatingApp() {
       const judgement = results[key];
       if (!judgement) return [];
       const { value, source } = effectiveConstant(chart, constants[key]);
-      const rm = rankMatch(chart.totalNoteCount, judgement);
+      const rm = scoreJudgement(chart.totalNoteCount, judgement);
       return [
         {
           chart,
@@ -169,11 +172,11 @@ export function RatingApp() {
           source,
           constant: value,
           ...rm,
-          rating: singleRating(value, rm.achievement),
+          rating: singleRating(value, rm.achievement, settings.ratingPoints),
         },
       ];
     });
-  }, [results, constants]);
+  }, [results, constants, settings.ratingPoints]);
 
   const otherPlayed = played.filter((p) => p.chart.difficulty !== "append");
   const appendPlayed = played.filter((p) => p.chart.difficulty === "append");
@@ -300,11 +303,11 @@ export function RatingApp() {
             プロセカレーティング
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground">
-            ランクマッチと同じ配点（PERFECT 3 / GREAT 2 / GOOD 1）で達成率を出し、譜面定数×達成率を単曲レートにします。定数が空の譜面は公式レベルを仮置きします。
+            達成率は PERFECT 100 / GREAT 80 / GOOD 50 / BAD 10 / MISS 0（上限 100%）です。単曲レートは達成率と定数の折れ線で、設定から境界を変えられます。定数が空の譜面は公式レベルを仮置きします。
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <HelpDialog />
+          <HelpDialog settings={settings} />
           <SettingsDialog settings={settings} onChange={setSettings} />
           <Button variant="outline" onClick={exportBackup}>
             書き出し
@@ -426,6 +429,7 @@ export function RatingApp() {
                     chart={chart}
                     judgement={results[String(chart.chartId)]}
                     constantOverride={constants[String(chart.chartId)]}
+                    ratingPoints={settings.ratingPoints}
                     onJudgement={upsertJudgement}
                     onAp={setAllPerfect}
                     onClear={clearChart}
@@ -438,6 +442,7 @@ export function RatingApp() {
                   charts={shown}
                   results={results}
                   constants={constants}
+                  ratingPoints={settings.ratingPoints}
                   onJudgement={upsertJudgement}
                   onAp={setAllPerfect}
                   onClear={clearChart}
@@ -523,6 +528,7 @@ function ChartTable({
   charts: rows,
   results,
   constants,
+  ratingPoints,
   onJudgement,
   onAp,
   onClear,
@@ -531,6 +537,7 @@ function ChartTable({
   charts: Chart[];
   results: Record<string, Judgement>;
   constants: Record<string, number>;
+  ratingPoints: RatingPoint[];
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
@@ -559,10 +566,12 @@ function ChartTable({
           const key = String(chart.chartId);
           const judgement = results[key];
           const stats = judgement
-            ? rankMatch(chart.totalNoteCount, judgement)
+            ? scoreJudgement(chart.totalNoteCount, judgement)
             : null;
           const { value, source } = effectiveConstant(chart, constants[key]);
-          const rating = stats ? singleRating(value, stats.achievement) : null;
+          const rating = stats
+            ? singleRating(value, stats.achievement, ratingPoints)
+            : null;
           return (
             <TableRow key={chart.chartId}>
               <TableCell>
@@ -660,6 +669,7 @@ function ChartCard({
   chart,
   judgement,
   constantOverride,
+  ratingPoints,
   onJudgement,
   onAp,
   onClear,
@@ -668,16 +678,19 @@ function ChartCard({
   chart: Chart;
   judgement: Judgement | undefined;
   constantOverride: number | undefined;
+  ratingPoints: RatingPoint[];
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
   onConstant: (chart: Chart, raw: string) => void;
 }) {
   const stats = judgement
-    ? rankMatch(chart.totalNoteCount, judgement)
+    ? scoreJudgement(chart.totalNoteCount, judgement)
     : null;
   const { value, source } = effectiveConstant(chart, constantOverride);
-  const rating = stats ? singleRating(value, stats.achievement) : null;
+  const rating = stats
+    ? singleRating(value, stats.achievement, ratingPoints)
+    : null;
   const key = String(chart.chartId);
   return (
     <Card size="sm">
@@ -823,7 +836,7 @@ function BestList({
   );
 }
 
-function HelpDialog() {
+function HelpDialog({ settings }: { settings: Settings }) {
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="outline" />}>計算式</DialogTrigger>
@@ -831,7 +844,7 @@ function HelpDialog() {
         <DialogHeader>
           <DialogTitle>計算式</DialogTitle>
           <DialogDescription>
-            非公式です。ゲーム内のランクマッチ配点だけを借りています。
+            非公式です。単曲レートの境界は設定から変えられます。
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 text-sm">
@@ -839,14 +852,21 @@ function HelpDialog() {
             PERFECT = 総ノーツ − GREAT − GOOD − BAD − MISS。各ノーツの重みは均等です。
           </p>
           <p className="font-mono text-xs leading-relaxed">
-            達成率 = (3×P + 2×GREAT + GOOD) / (3×総ノーツ)
+            達成率 = (100×P + 80×GREAT + 50×GOOD + 10×BAD) / (100×総ノーツ)
             <br />
-            単曲レート = 譜面定数 × 達成率
+            単曲レート = 下記境界を線形補間
             <br />
             その他レート = 上位 N 譜面の平均（初期 30）
             <br />
             APPEND レート = 上位 M 譜面の平均（初期 20）
           </p>
+          <ul className="font-mono text-xs">
+            {settings.ratingPoints.map((point) => (
+              <li key={point.percent}>
+                {point.percent}% → {describeRatingPoint(point)}
+              </li>
+            ))}
+          </ul>
           <p className="text-muted-foreground">
             CSV の定数列は空欄のままです。画面の定数欄に入れるか、あとで
             data/charts.csv を埋めてください。未設定時は公式レベルを仮の定数にします。N
@@ -865,19 +885,26 @@ function SettingsDialog({
   settings: Settings;
   onChange: (settings: Settings) => void;
 }) {
+  function updatePoint(index: number, patch: Partial<RatingPoint>) {
+    const next = settings.ratingPoints.map((point, i) =>
+      i === index ? { ...point, ...patch } : point,
+    );
+    onChange({ ...settings, ratingPoints: next });
+  }
+
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>譜面数</DialogTrigger>
-      <DialogContent>
+      <DialogTrigger render={<Button variant="outline" />}>設定</DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>ベスト譜面数</DialogTitle>
+          <DialogTitle>設定</DialogTitle>
           <DialogDescription>
-            あとから変えられます。平均の対象曲数だけが変わります。
+            ベスト譜面数と、単曲レートの境界をあとから変えられます。
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label htmlFor="other-n">その他</Label>
+            <Label htmlFor="other-n">その他の譜面数</Label>
             <Input
               id="other-n"
               inputMode="numeric"
@@ -891,7 +918,7 @@ function SettingsDialog({
             />
           </div>
           <div className="space-y-1">
-            <Label htmlFor="append-n">APPEND</Label>
+            <Label htmlFor="append-n">APPEND の譜面数</Label>
             <Input
               id="append-n"
               inputMode="numeric"
@@ -905,7 +932,104 @@ function SettingsDialog({
             />
           </div>
         </div>
-        <DialogFooter />
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <Label>単曲レートの境界</Label>
+            <div className="flex gap-1">
+              <Button
+                size="xs"
+                variant="outline"
+                onClick={() =>
+                  onChange({
+                    ...settings,
+                    ratingPoints: [
+                      ...settings.ratingPoints,
+                      { percent: 100, mode: "offset", value: 0 },
+                    ],
+                  })
+                }
+              >
+                行を追加
+              </Button>
+              <Button
+                size="xs"
+                variant="ghost"
+                onClick={() =>
+                  onChange({
+                    ...settings,
+                    ratingPoints: DEFAULT_RATING_POINTS,
+                  })
+                }
+              >
+                初期値に戻す
+              </Button>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            「定数+」は譜面定数への加減、「固定」は達成率に対するレートそのものです。境界の間は線形補間します。
+          </p>
+          <div className="space-y-2">
+            {settings.ratingPoints.map((point, index) => (
+              <div
+                key={`${index}-${point.percent}`}
+                className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2"
+              >
+                <Input
+                  aria-label="達成率パーセント"
+                  inputMode="decimal"
+                  className="tabular-nums"
+                  value={point.percent}
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    if (Number.isFinite(n)) {
+                      updatePoint(index, { percent: n });
+                    }
+                  }}
+                />
+                <select
+                  aria-label="境界の種類"
+                  className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm"
+                  value={point.mode}
+                  onChange={(e) =>
+                    updatePoint(index, {
+                      mode: e.target.value as RatingPointMode,
+                    })
+                  }
+                >
+                  <option value="offset">定数+</option>
+                  <option value="absolute">固定</option>
+                </select>
+                <Input
+                  aria-label="境界の値"
+                  inputMode="decimal"
+                  className="tabular-nums"
+                  value={point.value}
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    if (Number.isFinite(n)) {
+                      updatePoint(index, { value: n });
+                    }
+                  }}
+                />
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  disabled={settings.ratingPoints.length <= 1}
+                  onClick={() =>
+                    onChange({
+                      ...settings,
+                      ratingPoints: settings.ratingPoints.filter(
+                        (_, i) => i !== index,
+                      ),
+                    })
+                  }
+                >
+                  削除
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

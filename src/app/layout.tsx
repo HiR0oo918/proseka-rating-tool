@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
+import type { ReactNode } from "react";
 
 import "./globals.css";
 
@@ -12,10 +13,14 @@ const notoSans = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "プロセカレーティング",
   description:
-    "ランクマッチ配点に基づく非公式レーティング。APPEND とそれ以外で別集計します。",
+    "達成率と譜面定数から非公式レーティングを出します。APPEND とそれ以外で別集計します。",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: ReactNode;
+}>) {
   return (
     <html lang="ja" className={`${notoSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-background font-sans">

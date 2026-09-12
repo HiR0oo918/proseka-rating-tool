@@ -30,6 +30,33 @@ export type ConstantSource = "override" | "csv" | "level";
 export const DEFAULT_OTHER_BEST = 30;
 export const DEFAULT_APPEND_BEST = 20;
 
+export type RatingPointMode = "absolute" | "offset";
+
+export type RatingPoint = {
+  percent: number;
+  mode: RatingPointMode;
+  value: number;
+};
+
+/** 達成率%に対する単曲レート。absolute は固定値、offset は 定数+value。 */
+export const DEFAULT_RATING_POINTS: RatingPoint[] = [
+  { percent: 0, mode: "absolute", value: 0 },
+  { percent: 95, mode: "offset", value: -3.5 },
+  { percent: 97, mode: "offset", value: -1.5 },
+  { percent: 98.5, mode: "offset", value: 0 },
+  { percent: 99, mode: "offset", value: 1 },
+  { percent: 99.5, mode: "offset", value: 2.5 },
+  { percent: 100, mode: "offset", value: 3 },
+];
+
+export const JUDGEMENT_WEIGHT = {
+  perfect: 100,
+  great: 80,
+  good: 50,
+  bad: 10,
+  miss: 0,
+} as const;
+
 export const EMPTY_JUDGEMENT: Judgement = {
   great: 0,
   good: 0,
@@ -74,13 +101,18 @@ export function isAllPerfect(notes: number, judgement: Judgement): boolean {
   return isFullCombo(notes, judgement) && judgement.great === 0 && notes > 0;
 }
 
-/** ランクマッチ: PERFECT 3 / GREAT 2 / GOOD 1 / BAD・MISS 0。各ノーツ均等。 */
-export function rankMatch(notes: number, judgement: Judgement) {
+/** PERFECT 100 / GREAT 80 / GOOD 50 / BAD 10 / MISS 0。各ノーツ均等。上限 100%。 */
+export function scoreJudgement(notes: number, judgement: Judgement) {
   const j = clampJudgement(notes, judgement);
   const perfect = perfectCount(notes, j);
-  const score = 3 * perfect + 2 * j.great + 1 * j.good;
-  const maxScore = 3 * notes;
-  const achievement = maxScore === 0 ? 0 : score / maxScore;
+  const score =
+    JUDGEMENT_WEIGHT.perfect * perfect +
+    JUDGEMENT_WEIGHT.great * j.great +
+    JUDGEMENT_WEIGHT.good * j.good +
+    JUDGEMENT_WEIGHT.bad * j.bad +
+    JUDGEMENT_WEIGHT.miss * j.miss;
+  const maxScore = JUDGEMENT_WEIGHT.perfect * notes;
+  const achievement = maxScore === 0 ? 0 : Math.min(1, score / maxScore);
   return { perfect, score, maxScore, achievement };
 }
 
@@ -97,8 +129,62 @@ export function effectiveConstant(
   return { value: chart.playLevel, source: "level" };
 }
 
-export function singleRating(constant: number, achievement: number): number {
-  return constant * achievement;
+export function normalizeRatingPoints(points: RatingPoint[]): RatingPoint[] {
+  const cleaned = points
+    .filter(
+      (p) =>
+        Number.isFinite(p.percent) &&
+        Number.isFinite(p.value) &&
+        (p.mode === "absolute" || p.mode === "offset"),
+    )
+    .map((p) => ({
+      percent: Math.min(100, Math.max(0, p.percent)),
+      mode: p.mode,
+      value: p.value,
+    }))
+    .sort((a, b) => a.percent - b.percent);
+  const unique = new Map<number, RatingPoint>();
+  for (const p of cleaned) unique.set(p.percent, p);
+  const next = [...unique.values()].sort((a, b) => a.percent - b.percent);
+  return next.length > 0 ? next : DEFAULT_RATING_POINTS;
+}
+
+function lerp(x0: number, y0: number, x1: number, y1: number, x: number): number {
+  if (x1 === x0) return y1;
+  return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+}
+
+function pointRating(constant: number, point: RatingPoint): number {
+  return point.mode === "absolute" ? point.value : constant + point.value;
+}
+
+export function singleRating(
+  constant: number,
+  achievement: number,
+  points: RatingPoint[] = DEFAULT_RATING_POINTS,
+): number {
+  const pts = normalizeRatingPoints(points);
+  const x = Math.min(1, Math.max(0, achievement)) * 100;
+  const xs = pts.map((p) => p.percent);
+  const ys = pts.map((p) => pointRating(constant, p));
+  if (x <= xs[0]) {
+    if (xs[0] === 0) return ys[0];
+    return lerp(0, 0, xs[0], ys[0], x);
+  }
+  const last = xs.length - 1;
+  if (x >= xs[last]) return ys[last];
+  for (let i = 0; i < last; i++) {
+    if (x >= xs[i] && x <= xs[i + 1]) {
+      return lerp(xs[i], ys[i], xs[i + 1], ys[i + 1], x);
+    }
+  }
+  return ys[last];
+}
+
+export function describeRatingPoint(point: RatingPoint): string {
+  if (point.mode === "absolute") return String(point.value);
+  const sign = point.value > 0 ? "+" : "";
+  return `定数${sign}${point.value}`;
 }
 
 export function bestAverage(values: number[], bestCount: number) {
