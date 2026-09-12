@@ -34,6 +34,7 @@ import { charts, DIFFICULTY_LABEL } from "@/lib/charts";
 import {
   bestAverage,
   clampJudgement,
+  DEFAULT_JUDGEMENT_WEIGHTS,
   DEFAULT_RATING_POINTS,
   describeRatingPoint,
   effectiveConstant,
@@ -47,6 +48,7 @@ import {
   type Chart,
   type Difficulty,
   type Judgement,
+  type JudgementWeights,
   type RatingPoint,
   type RatingPointMode,
 } from "@/lib/rating";
@@ -164,7 +166,11 @@ export function RatingApp() {
       const judgement = results[key];
       if (!judgement) return [];
       const { value, source } = effectiveConstant(chart, constants[key]);
-      const rm = scoreJudgement(chart.totalNoteCount, judgement);
+      const rm = scoreJudgement(
+        chart.totalNoteCount,
+        judgement,
+        settings.judgementWeights,
+      );
       return [
         {
           chart,
@@ -176,7 +182,7 @@ export function RatingApp() {
         },
       ];
     });
-  }, [results, constants, settings.ratingPoints]);
+  }, [results, constants, settings.ratingPoints, settings.judgementWeights]);
 
   const otherPlayed = played.filter((p) => p.chart.difficulty !== "append");
   const appendPlayed = played.filter((p) => p.chart.difficulty === "append");
@@ -303,7 +309,7 @@ export function RatingApp() {
             プロセカレーティング
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground">
-            達成率は PERFECT 100 / GREAT 80 / GOOD 50 / BAD 10 / MISS 0（上限 100%）です。単曲レートは達成率と定数の折れ線で、設定から境界を変えられます。定数が空の譜面は公式レベルを仮置きします。
+            達成率の判定重みと単曲レートの折れ線は、設定から変えられます。定数が空の譜面は公式レベルを仮置きします。
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -430,6 +436,7 @@ export function RatingApp() {
                     judgement={results[String(chart.chartId)]}
                     constantOverride={constants[String(chart.chartId)]}
                     ratingPoints={settings.ratingPoints}
+                    judgementWeights={settings.judgementWeights}
                     onJudgement={upsertJudgement}
                     onAp={setAllPerfect}
                     onClear={clearChart}
@@ -443,6 +450,7 @@ export function RatingApp() {
                   results={results}
                   constants={constants}
                   ratingPoints={settings.ratingPoints}
+                  judgementWeights={settings.judgementWeights}
                   onJudgement={upsertJudgement}
                   onAp={setAllPerfect}
                   onClear={clearChart}
@@ -529,6 +537,7 @@ function ChartTable({
   results,
   constants,
   ratingPoints,
+  judgementWeights,
   onJudgement,
   onAp,
   onClear,
@@ -538,6 +547,7 @@ function ChartTable({
   results: Record<string, Judgement>;
   constants: Record<string, number>;
   ratingPoints: RatingPoint[];
+  judgementWeights: JudgementWeights;
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
@@ -566,7 +576,7 @@ function ChartTable({
           const key = String(chart.chartId);
           const judgement = results[key];
           const stats = judgement
-            ? scoreJudgement(chart.totalNoteCount, judgement)
+            ? scoreJudgement(chart.totalNoteCount, judgement, judgementWeights)
             : null;
           const { value, source } = effectiveConstant(chart, constants[key]);
           const rating = stats
@@ -670,6 +680,7 @@ function ChartCard({
   judgement,
   constantOverride,
   ratingPoints,
+  judgementWeights,
   onJudgement,
   onAp,
   onClear,
@@ -679,13 +690,14 @@ function ChartCard({
   judgement: Judgement | undefined;
   constantOverride: number | undefined;
   ratingPoints: RatingPoint[];
+  judgementWeights: JudgementWeights;
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
   onConstant: (chart: Chart, raw: string) => void;
 }) {
   const stats = judgement
-    ? scoreJudgement(chart.totalNoteCount, judgement)
+    ? scoreJudgement(chart.totalNoteCount, judgement, judgementWeights)
     : null;
   const { value, source } = effectiveConstant(chart, constantOverride);
   const rating = stats
@@ -844,7 +856,7 @@ function HelpDialog({ settings }: { settings: Settings }) {
         <DialogHeader>
           <DialogTitle>計算式</DialogTitle>
           <DialogDescription>
-            非公式です。単曲レートの境界は設定から変えられます。
+            非公式です。判定の重みと単曲レートの境界は設定から変えられます。
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 text-sm">
@@ -852,7 +864,14 @@ function HelpDialog({ settings }: { settings: Settings }) {
             PERFECT = 総ノーツ − GREAT − GOOD − BAD − MISS。各ノーツの重みは均等です。
           </p>
           <p className="font-mono text-xs leading-relaxed">
-            達成率 = (100×P + 80×GREAT + 50×GOOD + 10×BAD) / (100×総ノーツ)
+            達成率 = ({settings.judgementWeights.perfect}×P +{" "}
+            {settings.judgementWeights.great}×GREAT +{" "}
+            {settings.judgementWeights.good}×GOOD +{" "}
+            {settings.judgementWeights.bad}×BAD +{" "}
+            {settings.judgementWeights.miss}×MISS) / (
+            {settings.judgementWeights.perfect}×総ノーツ)
+            <br />
+            上限 100%
             <br />
             単曲レート = 下記境界を線形補間
             <br />
@@ -899,7 +918,7 @@ function SettingsDialog({
         <DialogHeader>
           <DialogTitle>設定</DialogTitle>
           <DialogDescription>
-            ベスト譜面数と、単曲レートの境界をあとから変えられます。
+            ベスト譜面数、判定の重み、単曲レートの境界をあとから変えられます。
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -930,6 +949,61 @@ function SettingsDialog({
                 }
               }}
             />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <Label>判定の重み</Label>
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={() =>
+                onChange({
+                  ...settings,
+                  judgementWeights: DEFAULT_JUDGEMENT_WEIGHTS,
+                })
+              }
+            >
+              初期値に戻す
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            達成率の分子に使います。分母は PERFECT の重み × 総ノーツです。100% を超えた分は切り捨てます。
+          </p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+            {(
+              [
+                ["perfect", "PERFECT"],
+                ["great", "GREAT"],
+                ["good", "GOOD"],
+                ["bad", "BAD"],
+                ["miss", "MISS"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className="space-y-1">
+                <Label htmlFor={`weight-${key}`} className="text-xs">
+                  {label}
+                </Label>
+                <Input
+                  id={`weight-${key}`}
+                  inputMode="decimal"
+                  className="tabular-nums"
+                  value={settings.judgementWeights[key]}
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    if (Number.isFinite(n)) {
+                      onChange({
+                        ...settings,
+                        judgementWeights: {
+                          ...settings.judgementWeights,
+                          [key]: n,
+                        },
+                      });
+                    }
+                  }}
+                />
+              </div>
+            ))}
           </div>
         </div>
         <div className="space-y-2">

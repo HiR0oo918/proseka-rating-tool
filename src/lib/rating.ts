@@ -49,13 +49,37 @@ export const DEFAULT_RATING_POINTS: RatingPoint[] = [
   { percent: 100, mode: "offset", value: 3 },
 ];
 
-export const JUDGEMENT_WEIGHT = {
+export type JudgementWeights = {
+  perfect: number;
+  great: number;
+  good: number;
+  bad: number;
+  miss: number;
+};
+
+export const DEFAULT_JUDGEMENT_WEIGHTS: JudgementWeights = {
   perfect: 100,
   great: 80,
   good: 50,
   bad: 10,
   miss: 0,
-} as const;
+};
+
+export function normalizeJudgementWeights(
+  weights: Partial<JudgementWeights> | undefined,
+): JudgementWeights {
+  const pick = (key: keyof JudgementWeights) => {
+    const n = weights?.[key];
+    return Number.isFinite(n) ? Number(n) : DEFAULT_JUDGEMENT_WEIGHTS[key];
+  };
+  return {
+    perfect: pick("perfect"),
+    great: pick("great"),
+    good: pick("good"),
+    bad: pick("bad"),
+    miss: pick("miss"),
+  };
+}
 
 export const EMPTY_JUDGEMENT: Judgement = {
   great: 0,
@@ -101,18 +125,24 @@ export function isAllPerfect(notes: number, judgement: Judgement): boolean {
   return isFullCombo(notes, judgement) && judgement.great === 0 && notes > 0;
 }
 
-/** PERFECT 100 / GREAT 80 / GOOD 50 / BAD 10 / MISS 0。各ノーツ均等。上限 100%。 */
-export function scoreJudgement(notes: number, judgement: Judgement) {
+/** 各ノーツ均等。分母は PERFECT 重み×総ノーツ。上限 100%。 */
+export function scoreJudgement(
+  notes: number,
+  judgement: Judgement,
+  weights: JudgementWeights = DEFAULT_JUDGEMENT_WEIGHTS,
+) {
+  const w = normalizeJudgementWeights(weights);
   const j = clampJudgement(notes, judgement);
   const perfect = perfectCount(notes, j);
   const score =
-    JUDGEMENT_WEIGHT.perfect * perfect +
-    JUDGEMENT_WEIGHT.great * j.great +
-    JUDGEMENT_WEIGHT.good * j.good +
-    JUDGEMENT_WEIGHT.bad * j.bad +
-    JUDGEMENT_WEIGHT.miss * j.miss;
-  const maxScore = JUDGEMENT_WEIGHT.perfect * notes;
-  const achievement = maxScore === 0 ? 0 : Math.min(1, score / maxScore);
+    w.perfect * perfect +
+    w.great * j.great +
+    w.good * j.good +
+    w.bad * j.bad +
+    w.miss * j.miss;
+  const maxScore = w.perfect * notes;
+  const achievement =
+    maxScore === 0 ? 0 : Math.min(1, Math.max(0, score / maxScore));
   return { perfect, score, maxScore, achievement };
 }
 

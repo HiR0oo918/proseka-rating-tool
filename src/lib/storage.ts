@@ -1,8 +1,11 @@
 import {
   DEFAULT_APPEND_BEST,
+  DEFAULT_JUDGEMENT_WEIGHTS,
   DEFAULT_OTHER_BEST,
   DEFAULT_RATING_POINTS,
+  normalizeJudgementWeights,
   type Judgement,
+  type JudgementWeights,
   type RatingPoint,
 } from "@/lib/rating";
 
@@ -14,6 +17,7 @@ export type Settings = {
   otherBestCount: number;
   appendBestCount: number;
   ratingPoints: RatingPoint[];
+  judgementWeights: JudgementWeights;
 };
 
 export type BackupFile = {
@@ -27,6 +31,7 @@ export const DEFAULT_SETTINGS: Settings = {
   otherBestCount: DEFAULT_OTHER_BEST,
   appendBestCount: DEFAULT_APPEND_BEST,
   ratingPoints: DEFAULT_RATING_POINTS,
+  judgementWeights: DEFAULT_JUDGEMENT_WEIGHTS,
 };
 
 function readJson<T>(key: string, fallback: T): T {
@@ -62,6 +67,7 @@ function normalizeSettings(s: Partial<Settings> | undefined): Settings {
     otherBestCount: Math.max(1, s?.otherBestCount ?? DEFAULT_OTHER_BEST),
     appendBestCount: Math.max(1, s?.appendBestCount ?? DEFAULT_APPEND_BEST),
     ratingPoints: points.length > 0 ? points : DEFAULT_RATING_POINTS,
+    judgementWeights: normalizeJudgementWeights(s?.judgementWeights),
   };
 }
 
