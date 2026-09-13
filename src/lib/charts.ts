@@ -14,3 +14,14 @@ export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
   master: "MASTER",
   append: "APPEND",
 };
+
+/** アプリ内の難易度ボタンに近い色。APPEND は虹色グラデーション。 */
+export const DIFFICULTY_BG: Record<Difficulty, string> = {
+  easy: "#66DD11",
+  normal: "#33BBEE",
+  hard: "#FEAA00",
+  expert: "#EE4366",
+  master: "#BB33EE",
+  append:
+    "linear-gradient(90deg, #FF7AD2 0%, #7AD7FF 48%, #FFE27A 100%)",
+};

@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { charts, DIFFICULTY_LABEL } from "@/lib/charts";
+import { charts, DIFFICULTY_BG, DIFFICULTY_LABEL } from "@/lib/charts";
 import {
   bestAverage,
   clampJudgement,
@@ -68,15 +68,6 @@ type DiffFilter = "all" | Difficulty;
 type SortKey = "title" | "level" | "rating";
 
 const PAGE_SIZE = 40;
-
-const DIFF_CLASS: Record<Difficulty, string> = {
-  easy: "bg-emerald-100 text-emerald-900",
-  normal: "bg-sky-100 text-sky-900",
-  hard: "bg-lime-100 text-lime-900",
-  expert: "bg-amber-100 text-amber-950",
-  master: "bg-rose-100 text-rose-900",
-  append: "bg-violet-100 text-violet-900",
-};
 
 function matchesQuery(chart: Chart, query: string): boolean {
   if (!query) return true;
@@ -117,7 +108,14 @@ function IntInput({
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   return (
-    <Badge className={DIFF_CLASS[difficulty]} variant="secondary">
+    <Badge
+      variant="outline"
+      className="border-transparent font-semibold text-white shadow-none"
+      style={{
+        background: DIFFICULTY_BG[difficulty],
+        color: "#fff",
+      }}
+    >
       {DIFFICULTY_LABEL[difficulty]}
     </Badge>
   );
