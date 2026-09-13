@@ -64,7 +64,8 @@ import {
   type Settings,
 } from "@/lib/storage";
 
-type DiffFilter = "all" | Difficulty;
+type Pool = "master-below" | "append";
+type DiffFilter = "all" | "hard" | "expert" | "master";
 type SortKey = "title" | "level" | "rating";
 
 const PAGE_SIZE = 40;
@@ -126,6 +127,7 @@ export function RatingApp() {
   const [results, setResults] = useState<Record<string, Judgement>>({});
   const [constants, setConstants] = useState<Record<string, number>>({});
   const [settings, setSettings] = useState<Settings>(loadSettings());
+  const [pool, setPool] = useState<Pool>("master-below");
   const [query, setQuery] = useState("");
   const [diffFilter, setDiffFilter] = useState<DiffFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("title");
@@ -202,7 +204,11 @@ export function RatingApp() {
 
   const filtered = useMemo(() => {
     const list = charts.filter((chart) => {
-      if (diffFilter !== "all" && chart.difficulty !== diffFilter) return false;
+      const isAppend = chart.difficulty === "append";
+      if (pool === "append" ? !isAppend : isAppend) return false;
+      if (pool === "master-below" && diffFilter !== "all") {
+        if (chart.difficulty !== diffFilter) return false;
+      }
       if (!matchesQuery(chart, query)) return false;
       if (enteredOnly && !results[String(chart.chartId)]) return false;
       return true;
@@ -221,7 +227,7 @@ export function RatingApp() {
       return a.title.localeCompare(b.title, "ja") || a.playLevel - b.playLevel;
     });
     return list;
-  }, [diffFilter, query, enteredOnly, results, sortKey, played]);
+  }, [pool, diffFilter, query, enteredOnly, results, sortKey, played]);
 
   const shown = filtered.slice(0, visible);
 
@@ -339,8 +345,8 @@ export function RatingApp() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <RatingSummary
-          title="その他"
-          description={`EXPERT・MASTER・HARD など APPEND 以外の上位 ${settings.otherBestCount} 譜面`}
+          title="MASTER以下"
+          description={`HARD・EXPERT・MASTER の上位 ${settings.otherBestCount} 譜面`}
           average={otherBest.average}
           used={otherBest.used}
           cap={otherBest.cap}
@@ -354,137 +360,84 @@ export function RatingApp() {
         />
       </div>
 
-      <Tabs defaultValue="charts">
+      <Tabs
+        value={pool}
+        onValueChange={(value) => {
+          if (value !== "master-below" && value !== "append") return;
+          setPool(value);
+          setVisible(PAGE_SIZE);
+          setDiffFilter("all");
+        }}
+      >
         <TabsList>
-          <TabsTrigger value="charts">譜面入力</TabsTrigger>
-          <TabsTrigger value="best">ベスト内訳</TabsTrigger>
+          <TabsTrigger value="master-below">MASTER以下</TabsTrigger>
+          <TabsTrigger value="append">APPEND</TabsTrigger>
         </TabsList>
-        <TabsContent value="charts" className="mt-4 space-y-4">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
-            <div className="flex-1 space-y-1">
-              <Label htmlFor="search">曲名 / 読み</Label>
-              <Input
-                id="search"
-                placeholder="例: ヒバナ、ひばな"
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setVisible(PAGE_SIZE);
-                }}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="diff">難易度</Label>
-              <select
-                id="diff"
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm md:w-36"
-                value={diffFilter}
-                onChange={(e) => {
-                  setDiffFilter(e.target.value as DiffFilter);
-                  setVisible(PAGE_SIZE);
-                }}
-              >
-                <option value="all">すべて</option>
-                <option value="hard">HARD</option>
-                <option value="expert">EXPERT</option>
-                <option value="master">MASTER</option>
-                <option value="append">APPEND</option>
-              </select>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="sort">並び</Label>
-              <select
-                id="sort"
-                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm md:w-40"
-                value={sortKey}
-                onChange={(e) => setSortKey(e.target.value as SortKey)}
-              >
-                <option value="title">曲名</option>
-                <option value="level">レベル高い順</option>
-                <option value="rating">単曲レート高い順</option>
-              </select>
-            </div>
-            <Button
-              variant={enteredOnly ? "default" : "outline"}
-              onClick={() => {
-                setEnteredOnly((v) => !v);
-                setVisible(PAGE_SIZE);
-              }}
-            >
-              {enteredOnly ? "入力済みのみ" : "未入力も含む"}
-            </Button>
-          </div>
-
-          {filtered.length === 0 ? (
-            <EmptyState
-              title="該当する譜面がありません"
-              body="検索語や難易度フィルタを変えてください。カタログはレベル 24 以上のみです。"
-            />
-          ) : (
-            <>
-              <p className="text-xs text-muted-foreground">
-                {filtered.length} 譜面中 {shown.length} 件を表示。GREAT 以下を入れると PERFECT
-                は総ノーツから自動で埋まります。AP は判定をすべて 0 にします。
-              </p>
-              <div className="space-y-3 md:hidden">
-                {shown.map((chart) => (
-                  <ChartCard
-                    key={chart.chartId}
-                    chart={chart}
-                    judgement={results[String(chart.chartId)]}
-                    constantOverride={constants[String(chart.chartId)]}
-                    ratingPoints={settings.ratingPoints}
-                    judgementWeights={settings.judgementWeights}
-                    onJudgement={upsertJudgement}
-                    onAp={setAllPerfect}
-                    onClear={clearChart}
-                    onConstant={setConstant}
-                  />
-                ))}
-              </div>
-              <div className="hidden md:block">
-                <ChartTable
-                  charts={shown}
-                  results={results}
-                  constants={constants}
-                  ratingPoints={settings.ratingPoints}
-                  judgementWeights={settings.judgementWeights}
-                  onJudgement={upsertJudgement}
-                  onAp={setAllPerfect}
-                  onClear={clearChart}
-                  onConstant={setConstant}
-                />
-              </div>
-              {shown.length < filtered.length ? (
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                >
-                  さらに表示（残り {filtered.length - shown.length}）
-                </Button>
-              ) : null}
-            </>
-          )}
+        <TabsContent value="master-below" className="mt-4">
+          <PoolPanels
+            pool="master-below"
+            query={query}
+            onQuery={(q) => {
+              setQuery(q);
+              setVisible(PAGE_SIZE);
+            }}
+            diffFilter={diffFilter}
+            onDiffFilter={(v) => {
+              setDiffFilter(v);
+              setVisible(PAGE_SIZE);
+            }}
+            sortKey={sortKey}
+            onSortKey={setSortKey}
+            enteredOnly={enteredOnly}
+            onEnteredOnly={(v) => {
+              setEnteredOnly(v);
+              setVisible(PAGE_SIZE);
+            }}
+            onMore={() => setVisible((v) => v + PAGE_SIZE)}
+            filtered={filtered}
+            shown={shown}
+            results={results}
+            constants={constants}
+            settings={settings}
+            ranked={otherRanked}
+            onJudgement={upsertJudgement}
+            onAp={setAllPerfect}
+            onClear={clearChart}
+            onConstant={setConstant}
+          />
         </TabsContent>
-        <TabsContent value="best" className="mt-4 space-y-6">
-          {played.length === 0 ? (
-            <EmptyState
-              title="まだリザルトがありません"
-              body="譜面入力タブで GREAT 以下を入れるか、AP を押すとここにベスト内訳が出ます。"
-            />
-          ) : (
-            <div className="grid gap-6 lg:grid-cols-2">
-              <BestList
-                title={`その他 ベスト ${settings.otherBestCount}`}
-                rows={otherRanked}
-              />
-              <BestList
-                title={`APPEND ベスト ${settings.appendBestCount}`}
-                rows={appendRanked}
-              />
-            </div>
-          )}
+        <TabsContent value="append" className="mt-4">
+          <PoolPanels
+            pool="append"
+            query={query}
+            onQuery={(q) => {
+              setQuery(q);
+              setVisible(PAGE_SIZE);
+            }}
+            diffFilter={diffFilter}
+            onDiffFilter={(v) => {
+              setDiffFilter(v);
+              setVisible(PAGE_SIZE);
+            }}
+            sortKey={sortKey}
+            onSortKey={setSortKey}
+            enteredOnly={enteredOnly}
+            onEnteredOnly={(v) => {
+              setEnteredOnly(v);
+              setVisible(PAGE_SIZE);
+            }}
+            onMore={() => setVisible((v) => v + PAGE_SIZE)}
+            filtered={filtered}
+            shown={shown}
+            results={results}
+            constants={constants}
+            settings={settings}
+            ranked={appendRanked}
+            onJudgement={upsertJudgement}
+            onAp={setAllPerfect}
+            onClear={clearChart}
+            onConstant={setConstant}
+          />
         </TabsContent>
       </Tabs>
     </div>
@@ -527,6 +480,191 @@ function EmptyState({ title, body }: { title: string; body: string }) {
         <CardDescription>{body}</CardDescription>
       </CardHeader>
     </Card>
+  );
+}
+
+type RankedRow = {
+  chart: Chart;
+  rating: number;
+  achievement: number;
+  constant: number;
+};
+
+function PoolPanels({
+  pool,
+  query,
+  onQuery,
+  diffFilter,
+  onDiffFilter,
+  sortKey,
+  onSortKey,
+  enteredOnly,
+  onEnteredOnly,
+  onMore,
+  filtered,
+  shown,
+  results,
+  constants,
+  settings,
+  ranked,
+  onJudgement,
+  onAp,
+  onClear,
+  onConstant,
+}: {
+  pool: Pool;
+  query: string;
+  onQuery: (query: string) => void;
+  diffFilter: DiffFilter;
+  onDiffFilter: (filter: DiffFilter) => void;
+  sortKey: SortKey;
+  onSortKey: (sort: SortKey) => void;
+  enteredOnly: boolean;
+  onEnteredOnly: (value: boolean) => void;
+  onMore: () => void;
+  filtered: Chart[];
+  shown: Chart[];
+  results: Record<string, Judgement>;
+  constants: Record<string, number>;
+  settings: Settings;
+  ranked: RankedRow[];
+  onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
+  onAp: (chart: Chart) => void;
+  onClear: (chart: Chart) => void;
+  onConstant: (chart: Chart, raw: string) => void;
+}) {
+  const [view, setView] = useState<"charts" | "best">("charts");
+  const bestTitle =
+    pool === "append"
+      ? `APPEND ベスト ${settings.appendBestCount}`
+      : `MASTER以下 ベスト ${settings.otherBestCount}`;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <Button
+          variant={view === "charts" ? "default" : "outline"}
+          onClick={() => setView("charts")}
+        >
+          譜面入力
+        </Button>
+        <Button
+          variant={view === "best" ? "default" : "outline"}
+          onClick={() => setView("best")}
+        >
+          ベスト内訳
+        </Button>
+      </div>
+      {view === "charts" ? (
+        <div className="space-y-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
+          <div className="flex-1 space-y-1">
+            <Label htmlFor={`search-${pool}`}>曲名 / 読み</Label>
+            <Input
+              id={`search-${pool}`}
+              placeholder="例: ヒバナ、ひばな"
+              value={query}
+              onChange={(e) => onQuery(e.target.value)}
+            />
+          </div>
+          {pool === "master-below" ? (
+            <div className="space-y-1">
+              <Label htmlFor="diff">難易度</Label>
+              <select
+                id="diff"
+                className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm md:w-36"
+                value={diffFilter}
+                onChange={(e) => onDiffFilter(e.target.value as DiffFilter)}
+              >
+                <option value="all">すべて</option>
+                <option value="hard">HARD</option>
+                <option value="expert">EXPERT</option>
+                <option value="master">MASTER</option>
+              </select>
+            </div>
+          ) : null}
+          <div className="space-y-1">
+            <Label htmlFor={`sort-${pool}`}>並び</Label>
+            <select
+              id={`sort-${pool}`}
+              className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-sm md:w-40"
+              value={sortKey}
+              onChange={(e) => onSortKey(e.target.value as SortKey)}
+            >
+              <option value="title">曲名</option>
+              <option value="level">レベル高い順</option>
+              <option value="rating">単曲レート高い順</option>
+            </select>
+          </div>
+          <Button
+            variant={enteredOnly ? "default" : "outline"}
+            onClick={() => onEnteredOnly(!enteredOnly)}
+          >
+            {enteredOnly ? "入力済みのみ" : "未入力も含む"}
+          </Button>
+        </div>
+
+        {filtered.length === 0 ? (
+          <EmptyState
+            title="該当する譜面がありません"
+            body="検索語や難易度フィルタを変えてください。カタログはレベル 24 以上のみです。"
+          />
+        ) : (
+          <>
+            <p className="text-xs text-muted-foreground">
+              {filtered.length} 譜面中 {shown.length} 件を表示。GREAT 以下を入れると PERFECT
+              は総ノーツから自動で埋まります。AP は判定をすべて 0 にします。
+            </p>
+            <div className="space-y-3 md:hidden">
+              {shown.map((chart) => (
+                <ChartCard
+                  key={chart.chartId}
+                  chart={chart}
+                  judgement={results[String(chart.chartId)]}
+                  constantOverride={constants[String(chart.chartId)]}
+                  ratingPoints={settings.ratingPoints}
+                  judgementWeights={settings.judgementWeights}
+                  onJudgement={onJudgement}
+                  onAp={onAp}
+                  onClear={onClear}
+                  onConstant={onConstant}
+                />
+              ))}
+            </div>
+            <div className="hidden md:block">
+              <ChartTable
+                charts={shown}
+                results={results}
+                constants={constants}
+                ratingPoints={settings.ratingPoints}
+                judgementWeights={settings.judgementWeights}
+                onJudgement={onJudgement}
+                onAp={onAp}
+                onClear={onClear}
+                onConstant={onConstant}
+              />
+            </div>
+            {shown.length < filtered.length ? (
+              <Button variant="outline" className="w-full" onClick={onMore}>
+                さらに表示（残り {filtered.length - shown.length}）
+              </Button>
+            ) : null}
+          </>
+        )}
+        </div>
+      ) : (
+      <div className="space-y-6">
+        {ranked.length === 0 ? (
+          <EmptyState
+            title="まだリザルトがありません"
+            body="譜面入力で GREAT 以下を入れるか、AP を押すとここにベスト内訳が出ます。"
+          />
+        ) : (
+          <BestList title={bestTitle} rows={ranked} />
+        )}
+      </div>
+      )}
+    </div>
   );
 }
 
@@ -873,7 +1011,7 @@ function HelpDialog({ settings }: { settings: Settings }) {
             <br />
             単曲レート = 下記境界を線形補間
             <br />
-            その他レート = 上位 N 譜面の平均（初期 30）
+            MASTER以下レート = 上位 N 譜面の平均（初期 30）
             <br />
             APPEND レート = 上位 M 譜面の平均（初期 20）
           </p>
@@ -921,7 +1059,7 @@ function SettingsDialog({
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label htmlFor="other-n">その他の譜面数</Label>
+            <Label htmlFor="other-n">MASTER以下の譜面数</Label>
             <Input
               id="other-n"
               inputMode="numeric"
