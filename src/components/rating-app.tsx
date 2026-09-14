@@ -34,8 +34,6 @@ import { charts, DIFFICULTY_BG, DIFFICULTY_LABEL } from "@/lib/charts";
 import {
   bestAverage,
   clampJudgement,
-  DEFAULT_JUDGEMENT_WEIGHTS,
-  DEFAULT_RATING_POINTS,
   describeRatingPoint,
   effectiveConstant,
   EMPTY_JUDGEMENT,
@@ -45,25 +43,14 @@ import {
   isFullCombo,
   scoreJudgement,
   singleRating,
-  snapConstantToLevel,
   type Chart,
   type Difficulty,
   type Judgement,
   type JudgementWeights,
   type RatingPoint,
-  type RatingPointMode,
 } from "@/lib/rating";
-import {
-  loadConstants,
-  loadResults,
-  loadSettings,
-  makeBackup,
-  parseBackup,
-  saveConstants,
-  saveResults,
-  saveSettings,
-  type Settings,
-} from "@/lib/storage";
+import { ratingConfig, type RatingConfig } from "@/lib/rating-config";
+import { loadResults, makeBackup, parseBackup, saveResults } from "@/lib/storage";
 
 type Pool = "master-below" | "append";
 type DiffFilter = "all" | "hard" | "expert" | "master";
@@ -108,46 +95,23 @@ function IntInput({
   );
 }
 
-function ConstantInput({
+function ConstantDisplay({
   playLevel,
-  committed,
-  onCommit,
-  "aria-label": ariaLabel,
-  id,
+  value,
+  source,
 }: {
   playLevel: number;
-  committed: number | null;
-  onCommit: (raw: string) => void;
-  "aria-label": string;
-  id?: string;
+  value: number;
+  source: "csv" | "level" | "override";
 }) {
-  const digit =
-    committed != null
-      ? String(Math.round(snapConstantToLevel(playLevel, committed) * 10) % 10)
-      : "";
-
   return (
-    <div className="flex items-center gap-0.5">
-      <span className="tabular-nums text-muted-foreground">{playLevel}.</span>
-      <Input
-        id={id}
-        aria-label={ariaLabel}
-        inputMode="numeric"
-        maxLength={1}
-        className="h-8 w-8 px-1 text-center tabular-nums"
-        placeholder="5"
-        value={digit}
-        onChange={(e) => {
-          const raw = e.target.value;
-          if (raw === "") {
-            onCommit("");
-            return;
-          }
-          if (!/^[0-9]$/.test(raw)) return;
-          onCommit(String(playLevel + Number(raw) / 10));
-        }}
-      />
-    </div>
+    <span className="tabular-nums">
+      {value.toFixed(1)}
+      {source === "level" ? (
+        <span className="ml-1 text-[10px] text-muted-foreground">仮</span>
+      ) : null}
+      <span className="sr-only">（公式レベル {playLevel}）</span>
+    </span>
   );
 }
 
@@ -169,8 +133,6 @@ function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
 export function RatingApp() {
   const [ready, setReady] = useState(false);
   const [results, setResults] = useState<Record<string, Judgement>>({});
-  const [constants, setConstants] = useState<Record<string, number>>({});
-  const [settings, setSettings] = useState<Settings>(loadSettings());
   const [pool, setPool] = useState<Pool>("master-below");
   const [query, setQuery] = useState("");
   const [diffFilter, setDiffFilter] = useState<DiffFilter>("all");
@@ -179,12 +141,11 @@ export function RatingApp() {
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [importError, setImportError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const settings = ratingConfig;
 
   useEffect(() => {
     /* eslint-disable react-hooks/set-state-in-effect -- マウント後に localStorage を読む */
     setResults(loadResults());
-    setConstants(loadConstants());
-    setSettings(loadSettings());
     setReady(true);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
@@ -194,22 +155,12 @@ export function RatingApp() {
     saveResults(results);
   }, [results, ready]);
 
-  useEffect(() => {
-    if (!ready) return;
-    saveConstants(constants);
-  }, [constants, ready]);
-
-  useEffect(() => {
-    if (!ready) return;
-    saveSettings(settings);
-  }, [settings, ready]);
-
   const played = useMemo(() => {
     return charts.flatMap((chart) => {
       const key = String(chart.chartId);
       const judgement = results[key];
       if (!judgement) return [];
-      const { value, source } = effectiveConstant(chart, constants[key]);
+      const { value, source } = effectiveConstant(chart, null);
       const rm = scoreJudgement(
         chart.totalNoteCount,
         judgement,
@@ -226,7 +177,7 @@ export function RatingApp() {
         },
       ];
     });
-  }, [results, constants, settings.ratingPoints, settings.judgementWeights]);
+  }, [results, settings.ratingPoints, settings.judgementWeights]);
 
   const otherPlayed = played.filter((p) => p.chart.difficulty !== "append");
   const appendPlayed = played.filter((p) => p.chart.difficulty === "append");
@@ -300,27 +251,9 @@ export function RatingApp() {
     });
   }
 
-  function setConstant(chart: Chart, raw: string) {
-    const key = String(chart.chartId);
-    if (raw.trim() === "") {
-      setConstants((prev) => {
-        const next = { ...prev };
-        delete next[key];
-        return next;
-      });
-      return;
-    }
-    const n = Number(raw);
-    if (!Number.isFinite(n) || n < 0) return;
-    setConstants((prev) => ({
-      ...prev,
-      [key]: snapConstantToLevel(chart.playLevel, n),
-    }));
-  }
-
   function exportBackup() {
     const blob = new Blob(
-      [JSON.stringify(makeBackup(settings, results, constants), null, 2)],
+      [JSON.stringify(makeBackup(results), null, 2)],
       { type: "application/json" },
     );
     const url = URL.createObjectURL(blob);
@@ -337,9 +270,7 @@ export function RatingApp() {
     reader.onload = () => {
       try {
         const backup = parseBackup(String(reader.result));
-        setSettings(backup.settings);
         setResults(backup.results);
-        setConstants(backup.constants);
       } catch (e) {
         setImportError(e instanceof Error ? e.message : "読み込みに失敗しました");
       }
@@ -363,12 +294,14 @@ export function RatingApp() {
             プロセカレーティング
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground">
-            達成率の判定重みと単曲レートの折れ線は、設定から変えられます。定数が空の譜面は公式レベル.5 を仮置きします。
+            判定の重み・単曲レート・譜面定数はリポジトリの共通設定です。定数が空の譜面は公式レベル.5
+            を仮置きします。
+            {settings.updatedAt ? ` 規則の更新日 ${settings.updatedAt}。` : ""}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <HelpDialog settings={settings} />
-          <SettingsDialog settings={settings} onChange={setSettings} />
+          <RulesDialog settings={settings} />
           <Button variant="outline" onClick={exportBackup}>
             書き出し
           </Button>
@@ -447,13 +380,11 @@ export function RatingApp() {
             filtered={filtered}
             shown={shown}
             results={results}
-            constants={constants}
             settings={settings}
             ranked={otherRanked}
             onJudgement={upsertJudgement}
             onAp={setAllPerfect}
             onClear={clearChart}
-            onConstant={setConstant}
           />
         </TabsContent>
         <TabsContent value="append" className="mt-4">
@@ -480,13 +411,11 @@ export function RatingApp() {
             filtered={filtered}
             shown={shown}
             results={results}
-            constants={constants}
             settings={settings}
             ranked={appendRanked}
             onJudgement={upsertJudgement}
             onAp={setAllPerfect}
             onClear={clearChart}
-            onConstant={setConstant}
           />
         </TabsContent>
       </Tabs>
@@ -554,13 +483,11 @@ function PoolPanels({
   filtered,
   shown,
   results,
-  constants,
   settings,
   ranked,
   onJudgement,
   onAp,
   onClear,
-  onConstant,
 }: {
   pool: Pool;
   query: string;
@@ -575,13 +502,11 @@ function PoolPanels({
   filtered: Chart[];
   shown: Chart[];
   results: Record<string, Judgement>;
-  constants: Record<string, number>;
-  settings: Settings;
+  settings: RatingConfig;
   ranked: RankedRow[];
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
-  onConstant: (chart: Chart, raw: string) => void;
 }) {
   const [view, setView] = useState<"charts" | "best">("charts");
   const bestTitle =
@@ -672,13 +597,11 @@ function PoolPanels({
                   key={chart.chartId}
                   chart={chart}
                   judgement={results[String(chart.chartId)]}
-                  constantOverride={constants[String(chart.chartId)]}
                   ratingPoints={settings.ratingPoints}
                   judgementWeights={settings.judgementWeights}
                   onJudgement={onJudgement}
                   onAp={onAp}
                   onClear={onClear}
-                  onConstant={onConstant}
                 />
               ))}
             </div>
@@ -686,13 +609,11 @@ function PoolPanels({
               <ChartTable
                 charts={shown}
                 results={results}
-                constants={constants}
                 ratingPoints={settings.ratingPoints}
                 judgementWeights={settings.judgementWeights}
                 onJudgement={onJudgement}
                 onAp={onAp}
                 onClear={onClear}
-                onConstant={onConstant}
               />
             </div>
             {shown.length < filtered.length ? (
@@ -731,23 +652,19 @@ function PoolPanels({
 function ChartTable({
   charts: rows,
   results,
-  constants,
   ratingPoints,
   judgementWeights,
   onJudgement,
   onAp,
   onClear,
-  onConstant,
 }: {
   charts: Chart[];
   results: Record<string, Judgement>;
-  constants: Record<string, number>;
   ratingPoints: RatingPoint[];
   judgementWeights: JudgementWeights;
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
-  onConstant: (chart: Chart, raw: string) => void;
 }) {
   return (
     <Table>
@@ -774,7 +691,7 @@ function ChartTable({
           const stats = judgement
             ? scoreJudgement(chart.totalNoteCount, judgement, judgementWeights)
             : null;
-          const { value, source } = effectiveConstant(chart, constants[key]);
+          const { value, source } = effectiveConstant(chart, null);
           const rating = stats
             ? singleRating(value, stats.achievement, ratingPoints)
             : null;
@@ -788,21 +705,11 @@ function ChartTable({
               </TableCell>
               <TableCell className="tabular-nums">{chart.playLevel}</TableCell>
               <TableCell>
-                <ConstantInput
-                  aria-label={`${chart.title} の譜面定数`}
+                <ConstantDisplay
                   playLevel={chart.playLevel}
-                  committed={
-                    constants[key] != null
-                      ? constants[key]
-                      : chart.chartConstant
-                  }
-                  onCommit={(raw) => onConstant(chart, raw)}
+                  value={value}
+                  source={source}
                 />
-                {source === "level" && judgement ? (
-                  <span className="mt-1 block text-[10px] text-muted-foreground">
-                    仮
-                  </span>
-                ) : null}
               </TableCell>
               <TableCell className="tabular-nums">
                 {chart.totalNoteCount}
@@ -871,32 +778,27 @@ function ChartTable({
 function ChartCard({
   chart,
   judgement,
-  constantOverride,
   ratingPoints,
   judgementWeights,
   onJudgement,
   onAp,
   onClear,
-  onConstant,
 }: {
   chart: Chart;
   judgement: Judgement | undefined;
-  constantOverride: number | undefined;
   ratingPoints: RatingPoint[];
   judgementWeights: JudgementWeights;
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
-  onConstant: (chart: Chart, raw: string) => void;
 }) {
   const stats = judgement
     ? scoreJudgement(chart.totalNoteCount, judgement, judgementWeights)
     : null;
-  const { value, source } = effectiveConstant(chart, constantOverride);
+  const { value, source } = effectiveConstant(chart, null);
   const rating = stats
     ? singleRating(value, stats.achievement, ratingPoints)
     : null;
-  const key = String(chart.chartId);
   return (
     <Card size="sm">
       <CardHeader>
@@ -926,20 +828,12 @@ function ChartCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Label className="text-xs" htmlFor={`const-${key}`}>
-            定数{source === "level" ? "（仮）" : ""}
-          </Label>
-          <ConstantInput
-            id={`const-${key}`}
-            aria-label={`${chart.title} の譜面定数`}
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-xs text-muted-foreground">定数</span>
+          <ConstantDisplay
             playLevel={chart.playLevel}
-            committed={
-              constantOverride != null
-                ? constantOverride
-                : chart.chartConstant
-            }
-            onCommit={(raw) => onConstant(chart, raw)}
+            value={value}
+            source={source}
           />
         </div>
         <div className="grid grid-cols-5 gap-2 text-center text-[11px] text-muted-foreground">
@@ -1099,7 +993,7 @@ function BestList({
   );
 }
 
-function HelpDialog({ settings }: { settings: Settings }) {
+function HelpDialog({ settings }: { settings: RatingConfig }) {
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="outline" />}>計算式</DialogTrigger>
@@ -1107,7 +1001,7 @@ function HelpDialog({ settings }: { settings: Settings }) {
         <DialogHeader>
           <DialogTitle>計算式</DialogTitle>
           <DialogDescription>
-            非公式です。判定の重みと単曲レートの境界は設定から変えられます。
+            非公式です。判定の重みと単曲レートの境界は全員共通です。
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 text-sm">
@@ -1126,9 +1020,9 @@ function HelpDialog({ settings }: { settings: Settings }) {
             <br />
             単曲レート = 下記境界を線形補間
             <br />
-            MASTER以下レート = 上位 N 譜面の平均（初期 30）
+            MASTER以下レート = 上位 {settings.otherBestCount} 譜面の平均
             <br />
-            APPEND レート = 上位 M 譜面の平均（初期 20）
+            APPEND レート = 上位 {settings.appendBestCount} 譜面の平均
           </p>
           <ul className="font-mono text-xs">
             {settings.ratingPoints.map((point) => (
@@ -1138,9 +1032,8 @@ function HelpDialog({ settings }: { settings: Settings }) {
             ))}
           </ul>
           <p className="text-muted-foreground">
-            CSV の定数列は空欄のままです。画面の定数欄に入れるか、あとで
-            data/charts.csv を埋めてください。未設定時は公式レベル.5 を仮の定数にします。
-            ベスト枠が埋まっていないときは、足りない枠を 0 として 30（APPEND は 20）で割ります。
+            譜面定数は data/charts.csv の chart_constant です。空欄のときは公式レベル.5
+            を仮置きします。ベスト枠が埋まっていないときは、足りない枠を 0 として割ります。
           </p>
         </div>
       </DialogContent>
@@ -1148,78 +1041,32 @@ function HelpDialog({ settings }: { settings: Settings }) {
   );
 }
 
-function SettingsDialog({
-  settings,
-  onChange,
-}: {
-  settings: Settings;
-  onChange: (settings: Settings) => void;
-}) {
-  function updatePoint(index: number, patch: Partial<RatingPoint>) {
-    const next = settings.ratingPoints.map((point, i) =>
-      i === index ? { ...point, ...patch } : point,
-    );
-    onChange({ ...settings, ratingPoints: next });
-  }
-
+function RulesDialog({ settings }: { settings: RatingConfig }) {
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>設定</DialogTrigger>
+      <DialogTrigger render={<Button variant="outline" />}>規則</DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>設定</DialogTitle>
+          <DialogTitle>レーティング規則</DialogTitle>
           <DialogDescription>
-            ベスト譜面数、判定の重み、単曲レートの境界をあとから変えられます。
+            全員共通です。変更は管理者がリポジトリの JSON / CSV を直してデプロイします。
+            {settings.updatedAt ? ` 更新日 ${settings.updatedAt}。` : ""}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label htmlFor="other-n">MASTER以下の譜面数</Label>
-            <Input
-              id="other-n"
-              inputMode="numeric"
-              value={settings.otherBestCount}
-              onChange={(e) => {
-                const n = Number(e.target.value);
-                if (Number.isFinite(n) && n >= 1) {
-                  onChange({ ...settings, otherBestCount: Math.floor(n) });
-                }
-              }}
-            />
+            <Label>MASTER以下の譜面数</Label>
+            <p className="tabular-nums text-sm">{settings.otherBestCount}</p>
           </div>
           <div className="space-y-1">
-            <Label htmlFor="append-n">APPEND の譜面数</Label>
-            <Input
-              id="append-n"
-              inputMode="numeric"
-              value={settings.appendBestCount}
-              onChange={(e) => {
-                const n = Number(e.target.value);
-                if (Number.isFinite(n) && n >= 1) {
-                  onChange({ ...settings, appendBestCount: Math.floor(n) });
-                }
-              }}
-            />
+            <Label>APPEND の譜面数</Label>
+            <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
           </div>
         </div>
         <div className="space-y-2">
-          <div className="flex items-center justify-between gap-2">
-            <Label>判定の重み</Label>
-            <Button
-              size="xs"
-              variant="ghost"
-              onClick={() =>
-                onChange({
-                  ...settings,
-                  judgementWeights: DEFAULT_JUDGEMENT_WEIGHTS,
-                })
-              }
-            >
-              初期値に戻す
-            </Button>
-          </div>
+          <Label>判定の重み</Label>
           <p className="text-xs text-muted-foreground">
-            達成率の分子に使います。分母は PERFECT の重み × 総ノーツです。100% を超えた分は切り捨てます。
+            達成率の分子に使います。分母は PERFECT の重み × 総ノーツです。
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
             {(
@@ -1232,128 +1079,26 @@ function SettingsDialog({
               ] as const
             ).map(([key, label]) => (
               <div key={key} className="space-y-1">
-                <Label htmlFor={`weight-${key}`} className="text-xs">
-                  {label}
-                </Label>
-                <Input
-                  id={`weight-${key}`}
-                  inputMode="decimal"
-                  className="tabular-nums"
-                  value={settings.judgementWeights[key]}
-                  onChange={(e) => {
-                    const n = Number(e.target.value);
-                    if (Number.isFinite(n)) {
-                      onChange({
-                        ...settings,
-                        judgementWeights: {
-                          ...settings.judgementWeights,
-                          [key]: n,
-                        },
-                      });
-                    }
-                  }}
-                />
+                <p className="text-xs text-muted-foreground">{label}</p>
+                <p className="tabular-nums text-sm">
+                  {settings.judgementWeights[key]}
+                </p>
               </div>
             ))}
           </div>
         </div>
         <div className="space-y-2">
-          <div className="flex items-center justify-between gap-2">
-            <Label>単曲レートの境界</Label>
-            <div className="flex gap-1">
-              <Button
-                size="xs"
-                variant="outline"
-                onClick={() =>
-                  onChange({
-                    ...settings,
-                    ratingPoints: [
-                      ...settings.ratingPoints,
-                      { percent: 100, mode: "offset", value: 0 },
-                    ],
-                  })
-                }
-              >
-                行を追加
-              </Button>
-              <Button
-                size="xs"
-                variant="ghost"
-                onClick={() =>
-                  onChange({
-                    ...settings,
-                    ratingPoints: DEFAULT_RATING_POINTS,
-                  })
-                }
-              >
-                初期値に戻す
-              </Button>
-            </div>
-          </div>
+          <Label>単曲レートの境界</Label>
           <p className="text-xs text-muted-foreground">
             「定数+」は譜面定数への加減、「固定」は達成率に対するレートそのものです。境界の間は線形補間します。
           </p>
-          <div className="space-y-2">
-            {settings.ratingPoints.map((point, index) => (
-              <div
-                key={`${index}-${point.percent}`}
-                className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-2"
-              >
-                <Input
-                  aria-label="達成率パーセント"
-                  inputMode="decimal"
-                  className="tabular-nums"
-                  value={point.percent}
-                  onChange={(e) => {
-                    const n = Number(e.target.value);
-                    if (Number.isFinite(n)) {
-                      updatePoint(index, { percent: n });
-                    }
-                  }}
-                />
-                <select
-                  aria-label="境界の種類"
-                  className="h-8 rounded-lg border border-input bg-transparent px-2 text-sm"
-                  value={point.mode}
-                  onChange={(e) =>
-                    updatePoint(index, {
-                      mode: e.target.value as RatingPointMode,
-                    })
-                  }
-                >
-                  <option value="offset">定数+</option>
-                  <option value="absolute">固定</option>
-                </select>
-                <Input
-                  aria-label="境界の値"
-                  inputMode="decimal"
-                  className="tabular-nums"
-                  value={point.value}
-                  onChange={(e) => {
-                    const n = Number(e.target.value);
-                    if (Number.isFinite(n)) {
-                      updatePoint(index, { value: n });
-                    }
-                  }}
-                />
-                <Button
-                  size="xs"
-                  variant="ghost"
-                  disabled={settings.ratingPoints.length <= 1}
-                  onClick={() =>
-                    onChange({
-                      ...settings,
-                      ratingPoints: settings.ratingPoints.filter(
-                        (_, i) => i !== index,
-                      ),
-                    })
-                  }
-                >
-                  削除
-                </Button>
-              </div>
+          <ul className="space-y-1 font-mono text-sm">
+            {settings.ratingPoints.map((point) => (
+              <li key={point.percent}>
+                {point.percent}% → {describeRatingPoint(point)}
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </DialogContent>
     </Dialog>

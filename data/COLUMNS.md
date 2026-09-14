@@ -14,7 +14,7 @@
 | `pronunciation` | 読み（検索用） |
 | `difficulty` | `hard` / `expert` / `master` / `append` など |
 | `play_level` | 公式の整数レベル |
-| `chart_constant` | 非公式定数。意図的に空欄。画面またはこの列で後から入れる |
+| `chart_constant` | 非公式定数。管理者がこの列で全員共通の値を入れる。空欄なら公式レベル.5 |
 | `total_note_count` | 総ノーツ数。PERFECT の逆算と達成率の分母に使う |
 | `published_at` | 公開日（UTC） |
 

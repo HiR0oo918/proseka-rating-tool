@@ -7,8 +7,8 @@
 ノーツはすべて均等です。
 
 - 達成率 = `(PERFECT重み×PERFECT + GREAT重み×GREAT + …) / (PERFECT重み×総ノーツ)`（上限 100%）
-- 判定の重みの初期値: PERFECT 100 / GREAT 80 / GOOD 50 / BAD 10 / MISS 0。画面の「設定」から変更できます。
-- 単曲レートは達成率と定数の折れ線（境界の間は線形補間）。初期値:
+- 判定の重み: PERFECT 100 / GREAT 80 / GOOD 50 / BAD 10 / MISS 0（[`src/data/rating-config.json`](src/data/rating-config.json)）
+- 単曲レートは達成率と定数の折れ線（境界の間は線形補間）:
 
 | 達成率 | 単曲レート |
 | --- | --- |
@@ -20,12 +20,12 @@
 | 99.5% | 定数 + 2.5 |
 | 100% | 定数 + 3 |
 
-境界は画面の「設定」から変更できます。
+- **MASTER以下**（HARD・EXPERT・MASTER）: 上位 30 譜面の合計 ÷ 30（未入力枠は 0）
+- **APPEND**: 上位 20 譜面の合計 ÷ 20（未入力枠は 0）
 
-- **MASTER以下**（HARD・EXPERT・MASTER）: 上位 30 譜面の合計 ÷ 30（未入力枠は 0。譜面数は変更可）
-- **APPEND**: 上位 20 譜面の合計 ÷ 20（未入力枠は 0。譜面数は変更可）
+譜面定数・判定重み・単曲レートの境界・ベスト枠数は全員共通です。ユーザー画面からは変えられません。管理者がリポジトリを直してデプロイします。手順は [`data/RATING.md`](data/RATING.md) です。
 
-譜面定数は CSV では空欄です。画面で入力するか、あとで `data/charts.csv` の `chart_constant` を埋めてください。未設定のときは公式レベル.5（例: Lv.32 → 32.5）を仮の定数にします。
+未設定の定数は公式レベル.5（例: Lv.32 → 32.5）です。
 
 対象譜面は公式レベル 24 以上で、現在ゲーム内でプレイできるもののみです。期間限定のメドレーや終了したコラボ曲は含みません。
 
@@ -55,8 +55,10 @@ npm run deploy
 
 ## データ
 
-- [`data/charts.csv`](data/charts.csv) … 譜面カタログ（編集用）
+- [`data/charts.csv`](data/charts.csv) … 譜面カタログ（編集用。定数列は管理者用）
 - [`data/COLUMNS.md`](data/COLUMNS.md) … 列の説明
-- [`src/data/charts.json`](src/data/charts.json) … アプリが読むコピー
+- [`data/RATING.md`](data/RATING.md) … レーティング規則の更新手順
+- [`src/data/charts.json`](src/data/charts.json) … アプリが読む譜面コピー
+- [`src/data/rating-config.json`](src/data/rating-config.json) … 判定重み・単曲レート境界・ベスト枠数
 
-CSV を直したら、同じ内容を JSON にも反映してから再起動してください。
+CSV や rating-config.json を直したら、charts.json も合わせて更新してからデプロイしてください。書き出し / 読み込みはリザルトのみです。

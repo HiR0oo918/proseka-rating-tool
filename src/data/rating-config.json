@@ -1,0 +1,21 @@
+{
+  "updatedAt": "2026-09-14",
+  "otherBestCount": 30,
+  "appendBestCount": 20,
+  "judgementWeights": {
+    "perfect": 100,
+    "great": 80,
+    "good": 50,
+    "bad": 10,
+    "miss": 0
+  },
+  "ratingPoints": [
+    { "percent": 0, "mode": "absolute", "value": 0 },
+    { "percent": 95, "mode": "offset", "value": -3.5 },
+    { "percent": 97, "mode": "offset", "value": -1.5 },
+    { "percent": 98.5, "mode": "offset", "value": 0 },
+    { "percent": 99, "mode": "offset", "value": 1 },
+    { "percent": 99.5, "mode": "offset", "value": 2.5 },
+    { "percent": 100, "mode": "offset", "value": 3 }
+  ]
+}
