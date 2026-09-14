@@ -175,7 +175,7 @@ export function effectiveConstant(
       source: "csv",
     };
   }
-  return { value: chart.playLevel, source: "level" };
+  return { value: chart.playLevel + 0.5, source: "level" };
 }
 
 export function normalizeRatingPoints(points: RatingPoint[]): RatingPoint[] {

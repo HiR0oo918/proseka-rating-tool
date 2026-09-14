@@ -135,7 +135,7 @@ function ConstantInput({
         inputMode="numeric"
         maxLength={1}
         className="h-8 w-8 px-1 text-center tabular-nums"
-        placeholder="0"
+        placeholder="5"
         value={digit}
         onChange={(e) => {
           const raw = e.target.value;
@@ -363,7 +363,7 @@ export function RatingApp() {
             プロセカレーティング
           </h1>
           <p className="max-w-xl text-sm text-muted-foreground">
-            達成率の判定重みと単曲レートの折れ線は、設定から変えられます。定数が空の譜面は公式レベルを仮置きします。
+            達成率の判定重みと単曲レートの折れ線は、設定から変えられます。定数が空の譜面は公式レベル.5 を仮置きします。
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -1139,7 +1139,7 @@ function HelpDialog({ settings }: { settings: Settings }) {
           </ul>
           <p className="text-muted-foreground">
             CSV の定数列は空欄のままです。画面の定数欄に入れるか、あとで
-            data/charts.csv を埋めてください。未設定時は公式レベルを仮の定数にします。
+            data/charts.csv を埋めてください。未設定時は公式レベル.5 を仮の定数にします。
             ベスト枠が埋まっていないときは、足りない枠を 0 として 30（APPEND は 20）で割ります。
           </p>
         </div>
