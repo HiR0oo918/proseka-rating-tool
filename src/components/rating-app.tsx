@@ -130,7 +130,7 @@ export function RatingApp() {
   const [pool, setPool] = useState<Pool>("master-below");
   const [query, setQuery] = useState("");
   const [diffFilter, setDiffFilter] = useState<DiffFilter>("all");
-  const [sortKey, setSortKey] = useState<SortKey>("title");
+  const [sortKey, setSortKey] = useState<SortKey>("level-desc");
   const [enteredOnly, setEnteredOnly] = useState(false);
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [importError, setImportError] = useState<string | null>(null);
