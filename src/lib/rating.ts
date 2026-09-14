@@ -16,6 +16,7 @@ export type Chart = {
   chartConstant: number | null;
   totalNoteCount: number;
   publishedAt: string;
+  jacketAsset: string;
 };
 
 export type Judgement = {

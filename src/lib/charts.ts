@@ -4,6 +4,9 @@ import type { Chart, Difficulty } from "@/lib/rating";
 export const charts: Chart[] = (raw as Chart[]).map((c) => ({
   ...c,
   difficulty: c.difficulty as Difficulty,
+  jacketAsset:
+    c.jacketAsset ||
+    `jacket_s_${String(c.musicId).padStart(3, "0")}`,
 }));
 
 export const DIFFICULTY_LABEL: Record<Difficulty, string> = {
@@ -23,4 +26,14 @@ export const DIFFICULTY_BG: Record<Difficulty, string> = {
   expert: "#EE4366",
   master: "#BB33EE",
   append: "linear-gradient(105deg, #BB91FF 0%, #E483F4 48%, #FE7BEF 100%)",
+};
+
+/** キャンバス用の単色（APPEND はホログラムのマゼンタ側）。 */
+export const DIFFICULTY_SOLID: Record<Difficulty, string> = {
+  easy: "#66DD11",
+  normal: "#33BBEE",
+  hard: "#FEAA00",
+  expert: "#EE4366",
+  master: "#BB33EE",
+  append: "#FE7BEF",
 };

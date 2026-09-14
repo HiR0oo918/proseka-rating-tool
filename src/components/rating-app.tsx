@@ -664,7 +664,16 @@ function PoolPanels({
             body="譜面入力で GREAT 以下を入れるか、AP を押すとここにベスト内訳が出ます。"
           />
         ) : (
-          <BestList title={bestTitle} rows={ranked} />
+          <BestList
+            title={bestTitle}
+            poolLabel={pool === "append" ? "APPEND" : "MASTER以下"}
+            cap={
+              pool === "append"
+                ? settings.appendBestCount
+                : settings.otherBestCount
+            }
+            rows={ranked}
+          />
         )}
       </div>
       )}
@@ -938,43 +947,106 @@ function ChartCard({
 
 function BestList({
   title,
+  poolLabel,
+  cap,
   rows,
 }: {
   title: string;
-  rows: {
-    chart: Chart;
-    rating: number;
-    achievement: number;
-    constant: number;
-  }[];
+  poolLabel: string;
+  cap: number;
+  rows: RankedRow[];
 }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const average =
+    rows.length === 0
+      ? 0
+      : rows.reduce((sum, row) => sum + row.rating, 0) / rows.length;
+
+  async function saveImage() {
+    setBusy(true);
+    setError(null);
+    try {
+      const { renderBestImage } = await import("@/lib/best-image");
+      const blob = await renderBestImage({
+        poolLabel,
+        average,
+        cap,
+        rows: rows.map((row) => ({
+          title: row.chart.title,
+          difficulty: row.chart.difficulty,
+          playLevel: row.chart.playLevel,
+          constant: row.constant,
+          achievement: row.achievement,
+          rating: row.rating,
+          jacketAsset: row.chart.jacketAsset,
+        })),
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pjsk-best-${poolLabel}.png`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "画像の生成に失敗しました");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>
-          {rows.length === 0
-            ? "この枠に入るリザルトはまだありません。"
-            : `上位 ${rows.length} 譜面`}
-        </CardDescription>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <CardDescription>
+              {rows.length === 0
+                ? "この枠に入るリザルトはまだありません。"
+                : `上位 ${rows.length} 譜面`}
+            </CardDescription>
+          </div>
+          <Button
+            variant="outline"
+            disabled={busy || rows.length === 0}
+            onClick={() => void saveImage()}
+          >
+            {busy ? "生成中…" : "ベスト枠画像"}
+          </Button>
+        </div>
+        {error ? (
+          <p className="text-sm text-destructive">{error}</p>
+        ) : null}
       </CardHeader>
       <CardContent>
         <ol className="space-y-2">
           {rows.map((row, i) => (
             <li
               key={row.chart.chartId}
-              className="flex items-baseline justify-between gap-2 border-b border-border/60 pb-2 last:border-0"
+              className="flex items-center justify-between gap-2 border-b border-border/60 pb-2 last:border-0"
             >
-              <div className="min-w-0">
-                <span className="mr-2 font-mono text-xs text-muted-foreground">
-                  {i + 1}
-                </span>
-                <span className="font-medium">{row.chart.title}</span>
-                <div className="ml-6 flex flex-wrap gap-1 text-xs text-muted-foreground">
-                  <DifficultyBadge difficulty={row.chart.difficulty} />
-                  <span>
-                    定数 {row.constant} / {formatPercent(row.achievement)}
+              <div className="flex min-w-0 items-center gap-3">
+                {/* ベスト枠のサムネは API 経由のジャケット */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/api/jacket/${encodeURIComponent(row.chart.jacketAsset)}`}
+                  alt=""
+                  width={48}
+                  height={48}
+                  className="size-12 shrink-0 rounded-md object-cover bg-muted"
+                />
+                <div className="min-w-0">
+                  <span className="mr-2 font-mono text-xs text-muted-foreground">
+                    {i + 1}
                   </span>
+                  <span className="font-medium">{row.chart.title}</span>
+                  <div className="mt-1 flex flex-wrap gap-1 text-xs text-muted-foreground">
+                    <DifficultyBadge difficulty={row.chart.difficulty} />
+                    <span>
+                      定数 {row.constant} / {formatPercent(row.achievement)}
+                    </span>
+                  </div>
                 </div>
               </div>
               <span className="font-mono tabular-nums">
