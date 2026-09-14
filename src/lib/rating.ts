@@ -221,11 +221,8 @@ export function describeRatingPoint(point: RatingPoint): string {
 export function bestAverage(values: number[], bestCount: number) {
   const n = Math.max(1, Math.floor(bestCount) || 1);
   const top = [...values].sort((a, b) => b - a).slice(0, n);
-  if (top.length === 0) {
-    return { average: 0, used: 0, cap: n };
-  }
   const sum = top.reduce((a, b) => a + b, 0);
-  return { average: sum / top.length, used: top.length, cap: n };
+  return { average: sum / n, used: top.length, cap: n };
 }
 
 export function formatRating(value: number): string {

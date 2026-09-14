@@ -86,8 +86,7 @@ export async function renderBestImage(opts: {
 
   ctx.font = "700 42px ui-monospace, monospace";
   ctx.fillStyle = "#ffffff";
-  const ratingText =
-    opts.rows.length === 0 ? "—" : formatRating(opts.average);
+  const ratingText = formatRating(opts.average);
   ctx.fillText(ratingText, pad, pad + 104);
   const ratingWidth = ctx.measureText(ratingText).width;
   ctx.font = "500 16px 'Noto Sans JP', sans-serif";

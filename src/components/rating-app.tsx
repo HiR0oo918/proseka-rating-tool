@@ -465,7 +465,7 @@ function RatingSummary({
       <CardHeader>
         <CardDescription>{title}</CardDescription>
         <CardTitle className="font-mono text-3xl tabular-nums">
-          {used === 0 ? "—" : formatRating(average)}
+          {formatRating(average)}
         </CardTitle>
         <CardDescription>
           {description}（{used}/{cap} 譜面）
@@ -958,10 +958,7 @@ function BestList({
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const average =
-    rows.length === 0
-      ? 0
-      : rows.reduce((sum, row) => sum + row.rating, 0) / rows.length;
+  const average = rows.reduce((sum, row) => sum + row.rating, 0) / cap;
 
   async function saveImage() {
     setBusy(true);
@@ -1100,8 +1097,8 @@ function HelpDialog({ settings }: { settings: Settings }) {
           </ul>
           <p className="text-muted-foreground">
             CSV の定数列は空欄のままです。画面の定数欄に入れるか、あとで
-            data/charts.csv を埋めてください。未設定時は公式レベルを仮の定数にします。N
-            曲に満たないときは、入力済みの平均を出します（0 埋めしません）。
+            data/charts.csv を埋めてください。未設定時は公式レベルを仮の定数にします。
+            ベスト枠が埋まっていないときは、足りない枠を 0 として 30（APPEND は 20）で割ります。
           </p>
         </div>
       </DialogContent>
