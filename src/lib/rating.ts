@@ -151,9 +151,12 @@ export function roundConstant(n: number): number {
   return Math.round(n * 10) / 10;
 }
 
-export function formatConstant(n: number): string {
-  const r = roundConstant(n);
-  return Number.isInteger(r) ? String(r) : r.toFixed(1);
+export function snapConstantToLevel(playLevel: number, value: number): number {
+  const digit = Math.min(
+    9,
+    Math.max(0, Math.round(roundConstant(value) * 10) % 10),
+  );
+  return playLevel + digit / 10;
 }
 
 export function effectiveConstant(
@@ -161,10 +164,16 @@ export function effectiveConstant(
   override: number | null | undefined,
 ): { value: number; source: ConstantSource } {
   if (override != null && Number.isFinite(override)) {
-    return { value: roundConstant(override), source: "override" };
+    return {
+      value: snapConstantToLevel(chart.playLevel, override),
+      source: "override",
+    };
   }
   if (chart.chartConstant != null && Number.isFinite(chart.chartConstant)) {
-    return { value: roundConstant(chart.chartConstant), source: "csv" };
+    return {
+      value: snapConstantToLevel(chart.playLevel, chart.chartConstant),
+      source: "csv",
+    };
   }
   return { value: chart.playLevel, source: "level" };
 }

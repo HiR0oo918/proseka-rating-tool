@@ -41,12 +41,11 @@ import {
   EMPTY_JUDGEMENT,
   formatPercent,
   formatRating,
-  formatConstant,
   isAllPerfect,
   isFullCombo,
   scoreJudgement,
   singleRating,
-  roundConstant,
+  snapConstantToLevel,
   type Chart,
   type Difficulty,
   type Judgement,
@@ -110,66 +109,45 @@ function IntInput({
 }
 
 function ConstantInput({
+  playLevel,
   committed,
-  placeholder,
   onCommit,
   "aria-label": ariaLabel,
   id,
-  className,
 }: {
+  playLevel: number;
   committed: number | null;
-  placeholder: string;
   onCommit: (raw: string) => void;
   "aria-label": string;
   id?: string;
-  className?: string;
 }) {
-  const [draft, setDraft] = useState<string | null>(null);
-  const shown =
-    draft ?? (committed != null ? formatConstant(committed) : "");
-
-  function apply(raw: string) {
-    if (raw.trim() === "") {
-      setDraft(null);
-      onCommit("");
-      return;
-    }
-    if (raw === "." || /^\d+\.$/.test(raw)) {
-      setDraft(raw);
-      return;
-    }
-    if (!/^\d+(\.\d)?$/.test(raw)) return;
-    const n = Number(raw);
-    if (!Number.isFinite(n) || n < 0) return;
-    setDraft(null);
-    onCommit(String(roundConstant(n)));
-  }
+  const digit =
+    committed != null
+      ? String(Math.round(snapConstantToLevel(playLevel, committed) * 10) % 10)
+      : "";
 
   return (
-    <Input
-      id={id}
-      aria-label={ariaLabel}
-      inputMode="decimal"
-      className={className}
-      placeholder={placeholder}
-      value={shown}
-      onChange={(e) => apply(e.target.value)}
-      onBlur={() => {
-        if (draft == null) return;
-        if (draft === "." || draft === "") {
-          setDraft(null);
-          onCommit("");
-          return;
-        }
-        const n = Number(draft.replace(/\.$/, ""));
-        if (!Number.isFinite(n) || n < 0) {
-          setDraft(null);
-          return;
-        }
-        setDraft(null);
-        onCommit(String(roundConstant(n)));
-      }}
-    />
+    <div className="flex items-center gap-0.5">
+      <span className="tabular-nums text-muted-foreground">{playLevel}.</span>
+      <Input
+        id={id}
+        aria-label={ariaLabel}
+        inputMode="numeric"
+        maxLength={1}
+        className="h-8 w-8 px-1 text-center tabular-nums"
+        placeholder="0"
+        value={digit}
+        onChange={(e) => {
+          const raw = e.target.value;
+          if (raw === "") {
+            onCommit("");
+            return;
+          }
+          if (!/^[0-9]$/.test(raw)) return;
+          onCommit(String(playLevel + Number(raw) / 10));
+        }}
+      />
+    </div>
   );
 }
 
@@ -334,7 +312,10 @@ export function RatingApp() {
     }
     const n = Number(raw);
     if (!Number.isFinite(n) || n < 0) return;
-    setConstants((prev) => ({ ...prev, [key]: roundConstant(n) }));
+    setConstants((prev) => ({
+      ...prev,
+      [key]: snapConstantToLevel(chart.playLevel, n),
+    }));
   }
 
   function exportBackup() {
@@ -809,8 +790,7 @@ function ChartTable({
               <TableCell>
                 <ConstantInput
                   aria-label={`${chart.title} の譜面定数`}
-                  className="h-8 w-16 px-1.5 tabular-nums"
-                  placeholder={String(chart.playLevel)}
+                  playLevel={chart.playLevel}
                   committed={
                     constants[key] != null
                       ? constants[key]
@@ -953,8 +933,7 @@ function ChartCard({
           <ConstantInput
             id={`const-${key}`}
             aria-label={`${chart.title} の譜面定数`}
-            className="h-8 w-20 tabular-nums"
-            placeholder={String(chart.playLevel)}
+            playLevel={chart.playLevel}
             committed={
               constantOverride != null
                 ? constantOverride
