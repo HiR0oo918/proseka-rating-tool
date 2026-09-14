@@ -44,7 +44,7 @@ OpenNext（`@opennextjs/cloudflare`）でデプロイします。Worker 名は `
 
 Git 連携する場合の例:
 
-- ビルドコマンド: `npm run build`
+- ビルドコマンド: `npm run build`（OpenNext の Worker 成果物まで作る）
 - デプロイコマンド: `npx wrangler deploy`
 
 手元から出す場合:
