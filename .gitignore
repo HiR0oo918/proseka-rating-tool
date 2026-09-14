@@ -42,3 +42,8 @@ next-env.d.ts
 
 # local fetch leftovers
 /agent-tools
+
+# Cloudflare / OpenNext
+.open-next
+.wrangler
+.dev.vars*

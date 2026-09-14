@@ -38,6 +38,21 @@ npm run dev
 
 ブラウザで表示された URL を開きます。リザルトはブラウザの localStorage に保存されます。書き出し / 読み込みで JSON バックアップできます。ベスト内訳から、ジャケット付きのベスト枠画像を PNG で保存できます。
 
+## Cloudflare Workers
+
+OpenNext（`@opennextjs/cloudflare`）でデプロイします。Worker 名は `proseka-rating-tool` です（`wrangler.jsonc` の `name` と自己参照バインディングを一致させてください）。
+
+Git 連携する場合の例:
+
+- ビルドコマンド: `npm run build`
+- デプロイコマンド: `npx wrangler deploy`
+
+手元から出す場合:
+
+```bash
+npm run deploy
+```
+
 ## データ
 
 - [`data/charts.csv`](data/charts.csv) … 譜面カタログ（編集用）
