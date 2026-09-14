@@ -147,15 +147,24 @@ export function scoreJudgement(
   return { perfect, score, maxScore, achievement };
 }
 
+export function roundConstant(n: number): number {
+  return Math.round(n * 10) / 10;
+}
+
+export function formatConstant(n: number): string {
+  const r = roundConstant(n);
+  return Number.isInteger(r) ? String(r) : r.toFixed(1);
+}
+
 export function effectiveConstant(
   chart: Chart,
   override: number | null | undefined,
 ): { value: number; source: ConstantSource } {
   if (override != null && Number.isFinite(override)) {
-    return { value: override, source: "override" };
+    return { value: roundConstant(override), source: "override" };
   }
   if (chart.chartConstant != null && Number.isFinite(chart.chartConstant)) {
-    return { value: chart.chartConstant, source: "csv" };
+    return { value: roundConstant(chart.chartConstant), source: "csv" };
   }
   return { value: chart.playLevel, source: "level" };
 }

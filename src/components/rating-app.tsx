@@ -41,10 +41,12 @@ import {
   EMPTY_JUDGEMENT,
   formatPercent,
   formatRating,
+  formatConstant,
   isAllPerfect,
   isFullCombo,
   scoreJudgement,
   singleRating,
+  roundConstant,
   type Chart,
   type Difficulty,
   type Judgement,
@@ -102,6 +104,70 @@ function IntInput({
         }
         const n = Number(raw);
         if (Number.isFinite(n) && n >= 0) onCommit(Math.floor(n));
+      }}
+    />
+  );
+}
+
+function ConstantInput({
+  committed,
+  placeholder,
+  onCommit,
+  "aria-label": ariaLabel,
+  id,
+  className,
+}: {
+  committed: number | null;
+  placeholder: string;
+  onCommit: (raw: string) => void;
+  "aria-label": string;
+  id?: string;
+  className?: string;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const shown =
+    draft ?? (committed != null ? formatConstant(committed) : "");
+
+  function apply(raw: string) {
+    if (raw.trim() === "") {
+      setDraft(null);
+      onCommit("");
+      return;
+    }
+    if (raw === "." || /^\d+\.$/.test(raw)) {
+      setDraft(raw);
+      return;
+    }
+    if (!/^\d+(\.\d)?$/.test(raw)) return;
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n < 0) return;
+    setDraft(null);
+    onCommit(String(roundConstant(n)));
+  }
+
+  return (
+    <Input
+      id={id}
+      aria-label={ariaLabel}
+      inputMode="decimal"
+      className={className}
+      placeholder={placeholder}
+      value={shown}
+      onChange={(e) => apply(e.target.value)}
+      onBlur={() => {
+        if (draft == null) return;
+        if (draft === "." || draft === "") {
+          setDraft(null);
+          onCommit("");
+          return;
+        }
+        const n = Number(draft.replace(/\.$/, ""));
+        if (!Number.isFinite(n) || n < 0) {
+          setDraft(null);
+          return;
+        }
+        setDraft(null);
+        onCommit(String(roundConstant(n)));
       }}
     />
   );
@@ -268,7 +334,7 @@ export function RatingApp() {
     }
     const n = Number(raw);
     if (!Number.isFinite(n) || n < 0) return;
-    setConstants((prev) => ({ ...prev, [key]: n }));
+    setConstants((prev) => ({ ...prev, [key]: roundConstant(n) }));
   }
 
   function exportBackup() {
@@ -741,18 +807,16 @@ function ChartTable({
               </TableCell>
               <TableCell className="tabular-nums">{chart.playLevel}</TableCell>
               <TableCell>
-                <Input
+                <ConstantInput
                   aria-label={`${chart.title} の譜面定数`}
                   className="h-8 w-16 px-1.5 tabular-nums"
                   placeholder={String(chart.playLevel)}
-                  value={
+                  committed={
                     constants[key] != null
-                      ? String(constants[key])
-                      : chart.chartConstant != null
-                        ? String(chart.chartConstant)
-                        : ""
+                      ? constants[key]
+                      : chart.chartConstant
                   }
-                  onChange={(e) => onConstant(chart, e.target.value)}
+                  onCommit={(raw) => onConstant(chart, raw)}
                 />
                 {source === "level" && judgement ? (
                   <span className="mt-1 block text-[10px] text-muted-foreground">
@@ -886,18 +950,17 @@ function ChartCard({
           <Label className="text-xs" htmlFor={`const-${key}`}>
             定数{source === "level" ? "（仮）" : ""}
           </Label>
-          <Input
+          <ConstantInput
             id={`const-${key}`}
+            aria-label={`${chart.title} の譜面定数`}
             className="h-8 w-20 tabular-nums"
             placeholder={String(chart.playLevel)}
-            value={
+            committed={
               constantOverride != null
-                ? String(constantOverride)
-                : chart.chartConstant != null
-                  ? String(chart.chartConstant)
-                  : ""
+                ? constantOverride
+                : chart.chartConstant
             }
-            onChange={(e) => onConstant(chart, e.target.value)}
+            onCommit={(raw) => onConstant(chart, raw)}
           />
         </div>
         <div className="grid grid-cols-5 gap-2 text-center text-[11px] text-muted-foreground">

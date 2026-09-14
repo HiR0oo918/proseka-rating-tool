@@ -4,6 +4,7 @@ import {
   DEFAULT_OTHER_BEST,
   DEFAULT_RATING_POINTS,
   normalizeJudgementWeights,
+  roundConstant,
   type Judgement,
   type JudgementWeights,
   type RatingPoint,
@@ -50,7 +51,19 @@ export function loadResults(): Record<string, Judgement> {
 }
 
 export function loadConstants(): Record<string, number> {
-  return readJson(CONSTANTS_KEY, {});
+  return normalizeConstants(readJson(CONSTANTS_KEY, {}));
+}
+
+function normalizeConstants(
+  constants: Record<string, number>,
+): Record<string, number> {
+  const next: Record<string, number> = {};
+  for (const [key, value] of Object.entries(constants ?? {})) {
+    if (Number.isFinite(value) && value >= 0) {
+      next[key] = roundConstant(value);
+    }
+  }
+  return next;
 }
 
 function normalizeSettings(s: Partial<Settings> | undefined): Settings {
@@ -80,7 +93,10 @@ export function saveResults(results: Record<string, Judgement>) {
 }
 
 export function saveConstants(constants: Record<string, number>) {
-  localStorage.setItem(CONSTANTS_KEY, JSON.stringify(constants));
+  localStorage.setItem(
+    CONSTANTS_KEY,
+    JSON.stringify(normalizeConstants(constants)),
+  );
 }
 
 export function saveSettings(settings: Settings) {
@@ -92,7 +108,12 @@ export function makeBackup(
   results: Record<string, Judgement>,
   constants: Record<string, number>,
 ): BackupFile {
-  return { version: 1, settings: normalizeSettings(settings), results, constants };
+  return {
+    version: 1,
+    settings: normalizeSettings(settings),
+    results,
+    constants: normalizeConstants(constants),
+  };
 }
 
 export function parseBackup(raw: string): BackupFile {
@@ -104,6 +125,6 @@ export function parseBackup(raw: string): BackupFile {
     version: 1,
     settings: normalizeSettings(data.settings),
     results: data.results ?? {},
-    constants: data.constants ?? {},
+    constants: normalizeConstants(data.constants ?? {}),
   };
 }
