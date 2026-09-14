@@ -66,7 +66,7 @@ import {
 
 type Pool = "master-below" | "append";
 type DiffFilter = "all" | "hard" | "expert" | "master";
-type SortKey = "title" | "level" | "rating";
+type SortKey = "title" | "level-desc" | "level-asc" | "rating";
 
 const PAGE_SIZE = 40;
 
@@ -218,8 +218,11 @@ export function RatingApp() {
       return row?.rating ?? -1;
     };
     list.sort((a, b) => {
-      if (sortKey === "level") {
+      if (sortKey === "level-desc") {
         return b.playLevel - a.playLevel || a.title.localeCompare(b.title, "ja");
+      }
+      if (sortKey === "level-asc") {
+        return a.playLevel - b.playLevel || a.title.localeCompare(b.title, "ja");
       }
       if (sortKey === "rating") {
         return ratingOf(b) - ratingOf(a) || a.title.localeCompare(b.title, "ja");
@@ -592,7 +595,8 @@ function PoolPanels({
               onChange={(e) => onSortKey(e.target.value as SortKey)}
             >
               <option value="title">曲名</option>
-              <option value="level">レベル高い順</option>
+              <option value="level-desc">レベル高い順</option>
+              <option value="level-asc">レベル低い順</option>
               <option value="rating">単曲レート高い順</option>
             </select>
           </div>
@@ -697,11 +701,11 @@ function ChartTable({
           <TableHead>Lv</TableHead>
           <TableHead>定数</TableHead>
           <TableHead>ノーツ</TableHead>
-          <TableHead>P</TableHead>
-          <TableHead>G</TableHead>
-          <TableHead>GO</TableHead>
-          <TableHead>B</TableHead>
-          <TableHead>M</TableHead>
+          <TableHead>PERFECT</TableHead>
+          <TableHead>GREAT</TableHead>
+          <TableHead>GOOD</TableHead>
+          <TableHead>BAD</TableHead>
+          <TableHead>MISS</TableHead>
           <TableHead>達成率</TableHead>
           <TableHead>単曲</TableHead>
           <TableHead />
@@ -888,7 +892,7 @@ function ChartCard({
           />
         </div>
         <div className="grid grid-cols-5 gap-2 text-center text-[11px] text-muted-foreground">
-          <span>P {stats ? stats.perfect : "—"}</span>
+          <span>PERFECT {stats ? stats.perfect : "—"}</span>
           <span>GREAT</span>
           <span>GOOD</span>
           <span>BAD</span>
