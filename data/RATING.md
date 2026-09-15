@@ -16,6 +16,15 @@
 
 ## 譜面定数
 
-[`data/charts.csv`](charts.csv) の `chart_constant` 列。空欄のときは公式レベル.5 を仮置きします。整数部は公式 `play_level` に揃え、小数第1位だけ入れます（例: 32.7）。
+入力用リスト（レベル高い順）:
 
-CSV を直したら、同じ定数を [`src/data/charts.json`](../src/data/charts.json) にも反映してからデプロイしてください。
+- [`data/constants-by-level.md`](constants-by-level.md) … 一覧
+- [`data/constants-master-below.csv`](constants-master-below.csv) … MASTER以下の入力用
+- [`data/constants-append.csv`](constants-append.csv) … APPEND の入力用
+
+`chart_constant` に公式レベル.小数1桁を入れてください（例: 32.7）。空欄のときは公式レベル.5 を仮置きします。
+
+```bash
+npm run constants:list    # カタログからリストを再発行
+npm run constants:apply   # 入力用 CSV を charts.csv と charts.json に反映
+```
