@@ -58,6 +58,7 @@ npm run deploy
 - [`data/charts.csv`](data/charts.csv) … 譜面カタログ（編集用。定数列は管理者用）
 - [`data/constants-by-level.md`](data/constants-by-level.md) … 定数入力用のレベル順リスト
 - [`data/constants-master-below.csv`](data/constants-master-below.csv) / [`data/constants-append.csv`](data/constants-append.csv) … 定数の入力用 CSV
+- [`data/constants-mas-merge-report.csv`](data/constants-mas-merge-report.csv) … MASTER 定数のシート(A)×Wiki判定(B) 合成結果
 - [`data/COLUMNS.md`](data/COLUMNS.md) … 列の説明
 - [`data/RATING.md`](data/RATING.md) … レーティング規則の更新手順
 - [`src/data/charts.json`](src/data/charts.json) … アプリが読む譜面コピー

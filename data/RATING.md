@@ -22,7 +22,35 @@
 - [`data/constants-master-below.csv`](constants-master-below.csv) … MASTER以下の入力用
 - [`data/constants-append.csv`](constants-append.csv) … APPEND の入力用
 
-`chart_constant` に公式レベル.小数1桁を入れてください（例: 32.7）。空欄のときは公式レベル.5 を仮置きします。
+`chart_constant` に公式レベル.小数1桁を入れてください（例: 32.7）。空欄のときは公式レベル.5 を仮置きします。整数部分は常に公式 `play_level` です。
+
+### MASTER 定数の合成
+
+MASTER は次の2源を [`scripts/merge-mas-constants.py`](../scripts/merge-mas-constants.py) で合成しています。
+
+- A: 非公式難易度表スプレッドシート「難易度表(MAS)」の定数欄（`data/sources/mas-sheet.csv`）
+- B: [楽曲難易度表MASTER](https://pjsekai.com/?aa95a0f97c#mas30) の判定（`data/sources/mas-wiki.txt`）
+
+B の判定は公式レベルに対する小数として次のレンジに載せます（境界は含む）。
+
+| 判定 | 小数 |
+| --- | --- |
+| 最下位－ | .0 |
+| 最下位 | .0〜.2 |
+| 下位 | .2〜.4 |
+| 適正 | .4〜.6 |
+| 上位 | .6〜.8 |
+| 最上位 | .8〜.9 |
+| 最上位＋ | .9 |
+
+A の小数が B のレンジに入っていれば A を採用。外れていれば A と B 代表値（レンジ中央。最上位は .85）の平均を小数1桁に丸めます。片方しか無いときはその値（B のみは代表値）を使い、両方無いとき（Wiki が判定困難・未判定でシートにも無い曲）は空欄のままです。シート側の `32.5+` のような記号は数値だけ読みます。削除済み曲はカタログに入れません。
+
+```bash
+python3 scripts/merge-mas-constants.py
+npm run constants:apply
+```
+
+対照表は [`data/constants-mas-merge-report.csv`](constants-mas-merge-report.csv) です。
 
 ```bash
 npm run constants:list    # カタログからリストを再発行
