@@ -1,6 +1,6 @@
 # 定数入力用譜面リスト（レベル高い順）
 
-カタログから自動生成しています。定数は `chart_constant` に小数1桁までで入れてください。公式レベルをまたぐ値も入力できます。
+カタログから自動生成しています。定数は `chart_constant` に公式レベル.小数1桁で入れてください。
 
 入力用 CSV:
 
@@ -96,7 +96,7 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 ### Lv.31
 
 - MASTER 99 Glooms `31.2`  `3745`
-- MASTER ARQETYPE `32.4`  `2030`
+- MASTER ARQETYPE `31.4`  `2030`
 - MASTER Blackjack `31.0`  `2710`
 - MASTER D/N/A `31.5`  `2980`
 - MASTER Happy Halloween `31.5`  `860`
@@ -1371,14 +1371,14 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - APPEND Brand New Day `35.4`  `4013`
 - APPEND CHAOS `35.3`  `4155`
 - APPEND folern `35.9`  `4026`
-- APPEND IMAWANOKIWA `36.4`  `4131`
+- APPEND IMAWANOKIWA `35.4`  `4131`
 - APPEND 超最終鬼畜妹フランドール・Ｓ `35.5`  `4053`
 - APPEND 六兆年と一夜物語 `35.7`  `4141`
 
 ### Lv.34
 
-- APPEND チルドレンレコード `35.6`  `5369`
-- APPEND ヒバナ -Reloaded- `35.5`  `4002`
+- APPEND チルドレンレコード `34.6`  `5369`
+- APPEND ヒバナ -Reloaded- `34.5`  `4002`
 - APPEND フュージョン `34.3`  `4097`
 - APPEND プロトディスコ `34.1`  `4089`
 - APPEND 東京テディベア `34.6`  `4045`
@@ -1454,7 +1454,7 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 
 ### Lv.29
 
-- APPEND Awake Now `30.5`  `4057`
+- APPEND Awake Now `29.5`  `4057`
 - APPEND Beyond the way `29.4`  `4105`
 - APPEND DAYBREAK FRONTLINE `29.9`  `4030`
 - APPEND ECHO `29.3`  `4098`

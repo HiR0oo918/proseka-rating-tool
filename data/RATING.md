@@ -22,7 +22,7 @@
 - [`data/constants-master-below.csv`](constants-master-below.csv) … MASTER以下の入力用
 - [`data/constants-append.csv`](constants-append.csv) … APPEND の入力用
 
-`chart_constant` に小数1桁までの定数を入れてください（例: 32.7）。空欄のときは公式レベル.5を仮置きします。定数は公式 `play_level` をまたぐ値も入力できます。
+`chart_constant` に公式レベル.小数1桁を入れてください（例: 32.7）。空欄のときは公式レベル.5を仮置きします。整数部分は公式 `play_level` に揃えます。
 
 ### MASTER 定数の合成
 

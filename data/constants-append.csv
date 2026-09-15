@@ -16,11 +16,11 @@ chart_id,difficulty,play_level,title,chart_constant
 4013,append,35,Brand New Day,35.4
 4155,append,35,CHAOS,35.3
 4026,append,35,folern,35.9
-4131,append,35,IMAWANOKIWA,36.4
+4131,append,35,IMAWANOKIWA,35.4
 4053,append,35,超最終鬼畜妹フランドール・Ｓ,35.5
 4141,append,35,六兆年と一夜物語,35.7
-5369,append,34,チルドレンレコード,35.6
-4002,append,34,ヒバナ -Reloaded-,35.5
+5369,append,34,チルドレンレコード,34.6
+4002,append,34,ヒバナ -Reloaded-,34.5
 4097,append,34,フュージョン,34.3
 4089,append,34,プロトディスコ,34.1
 4045,append,34,東京テディベア,34.6
@@ -81,7 +81,7 @@ chart_id,difficulty,play_level,title,chart_constant
 4061,append,30,泡沫未来,30.6
 4136,append,30,劣等上等,30.4
 4148,append,30,傀儡のうつつ,30.6
-4057,append,29,Awake Now,30.5
+4057,append,29,Awake Now,29.5
 4105,append,29,Beyond the way,29.4
 4030,append,29,DAYBREAK FRONTLINE,29.9
 4098,append,29,ECHO,29.3
