@@ -1,108 +1,108 @@
 chart_id,difficulty,play_level,title,chart_constant
-4132,append,38,怪獣になりたい,
-4134,append,37,0.0000034,
-4028,append,37,MarbleBlue.,
-4048,append,37,おぎゃりないざー,
-4063,append,37,ダイジョブですか？,
-4129,append,37,ネクラチューンサーカス,
-4075,append,37,メモリア,
-4161,append,37,初音狂奏曲第01番「彗惺」,
-4156,append,36,ANiMA,
-4027,append,36,Sage,
-4123,append,36,SAN値直葬,
-4040,append,36,嬢王,
-4077,append,36,生命性シンドロウム,
-4107,append,36,超ナイト・オブ・ナイツ,
-4013,append,35,Brand New Day,
-4155,append,35,CHAOS,
-4026,append,35,folern,
-4131,append,35,IMAWANOKIWA,
-4053,append,35,超最終鬼畜妹フランドール・Ｓ,
-4141,append,35,六兆年と一夜物語,
-5369,append,34,チルドレンレコード,
-4002,append,34,ヒバナ -Reloaded-,
-4097,append,34,フュージョン,
-4089,append,34,プロトディスコ,
-4045,append,34,東京テディベア,
-4010,append,33,Iなんです,
-4091,append,33,ONESELF,
-4085,append,33,snooze,
+4132,append,38,怪獣になりたい,38.0
+4134,append,37,0.0000034,37.4
+4028,append,37,MarbleBlue.,37.8
+4048,append,37,おぎゃりないざー,37.5
+4063,append,37,ダイジョブですか？,37.8
+4129,append,37,ネクラチューンサーカス,37.2
+4075,append,37,メモリア,37.2
+4161,append,37,初音狂奏曲第01番「彗惺」,37.5
+4156,append,36,ANiMA,36.5
+4027,append,36,Sage,36.5
+4123,append,36,SAN値直葬,36.6
+4040,append,36,嬢王,36.6
+4077,append,36,生命性シンドロウム,36.9
+4107,append,36,超ナイト・オブ・ナイツ,36.1
+4013,append,35,Brand New Day,35.4
+4155,append,35,CHAOS,35.3
+4026,append,35,folern,35.9
+4131,append,35,IMAWANOKIWA,35.4
+4053,append,35,超最終鬼畜妹フランドール・Ｓ,35.5
+4141,append,35,六兆年と一夜物語,35.7
+5369,append,34,チルドレンレコード,34.6
+4002,append,34,ヒバナ -Reloaded-,34.5
+4097,append,34,フュージョン,34.3
+4089,append,34,プロトディスコ,34.1
+4045,append,34,東京テディベア,34.6
+4010,append,33,Iなんです,33.8
+4091,append,33,ONESELF,33.2
+4085,append,33,snooze,33.2
 4087,append,33,アンヘル,
-4068,append,33,カゲロウデイズ,
-4067,append,33,キラー,
-4109,append,33,チルノのパーフェクトさんすう学園,
-4095,append,33,ドーナツホール 2024,
-4008,append,33,トンデモワンダーズ,
-4082,append,33,のだ,
-4084,append,33,混沌ブギ,
-4069,append,32,88☆彡,
-4052,append,32,"Help me, ERINNNNNN!!",
-4127,append,32,Journey,
-4012,append,32,NEO,
-4106,append,32,RAD DOGS,
-4121,append,32,アクセラレイト,
-4102,append,32,スーサイドパレヱド,
-4108,append,32,とうほう☆ワンダーランド,
-4146,append,32,ノンブレス・オブリージュ,
-4153,append,32,幾望の月,
-4118,append,32,生きる,
-4029,append,32,地球最後の告白を,
-4051,append,31,Bad Apple!! feat.SEKAI,
-4157,append,31,Masquerade,
-4055,append,31,オペラ！スペースオペラ！,
-4011,append,31,ジェヘナ,
+4068,append,33,カゲロウデイズ,33.5
+4067,append,33,キラー,33.4
+4109,append,33,チルノのパーフェクトさんすう学園,33.4
+4095,append,33,ドーナツホール 2024,33.3
+4008,append,33,トンデモワンダーズ,33.5
+4082,append,33,のだ,33.6
+4084,append,33,混沌ブギ,33.4
+4069,append,32,88☆彡,32.5
+4052,append,32,"Help me, ERINNNNNN!!",32.3
+4127,append,32,Journey,32.6
+4012,append,32,NEO,32.6
+4106,append,32,RAD DOGS,32.2
+4121,append,32,アクセラレイト,32.4
+4102,append,32,スーサイドパレヱド,32.4
+4108,append,32,とうほう☆ワンダーランド,32.8
+4146,append,32,ノンブレス・オブリージュ,32.6
+4153,append,32,幾望の月,32.5
+4118,append,32,生きる,32.1
+4029,append,32,地球最後の告白を,32.3
+4051,append,31,Bad Apple!! feat.SEKAI,31.2
+4157,append,31,Masquerade,31.4
+4055,append,31,オペラ！スペースオペラ！,31.6
+4011,append,31,ジェヘナ,31.4
 4104,append,31,ショウタイム・ルーラー,
-4003,append,31,ステラ,
-4115,append,31,てらてら,
-4009,append,31,テレキャスタービーボーイ,
-4070,append,31,バグ,
-4142,append,31,ビバハピ,
-4007,append,31,フェレス,
-4130,append,31,ペンタトニック,
-4145,append,31,ミルククラウン・オン・ソーネチカ,
-4024,append,31,一千光年,
-4144,append,31,千本桜,
-4073,append,31,熱風,
-4074,append,30,Flyer!,
-4046,append,30,Flyway,
-4147,append,30,WAVE,
-4060,append,30,エンパープル,
-4150,append,30,お気に召すまま,
-4133,append,30,ザムザ,
-4112,append,30,とても痛い痛がりたい,
-4143,append,30,ドラマツルギー,
-4004,append,30,モア！ジャンプ！モア！,
-4033,append,30,レグルス,
-4056,append,30,ロウワー,
-4152,append,30,羽歌,
-4083,append,30,虚ろを扇ぐ,
-4110,append,30,世界を照らすテトラッド,
-4017,append,30,青く駆けろ！,
-4061,append,30,泡沫未来,
-4136,append,30,劣等上等,
-4148,append,30,傀儡のうつつ,
-4057,append,29,Awake Now,
-4105,append,29,Beyond the way,
-4030,append,29,DAYBREAK FRONTLINE,
-4098,append,29,ECHO,
-4162,append,29,Gimme more!,
-4120,append,29,MOTTO!!!,
-4101,append,29,Sympathy,
-4064,append,29,YY,
-4099,append,29,イフ,
-4111,append,29,インテグラル,
-4006,append,29,シネマ,
-4114,append,29,テトリス,
-4043,append,29,トキヲ・ファンカ,
-4116,append,29,はぐ,
-4088,append,29,ハッピーシンセサイザ,
-4041,append,29,みくみくにしてあげる♪【してやんよ】,
-4076,append,29,ワールドワイドワンダー,
-4096,append,29,ワーワーワールド,
-4016,append,29,威風堂々,
-4094,append,29,群青讃歌,
-4044,append,29,酔いどれ知らず,
-4122,append,29,箱庭のコラル,
+4003,append,31,ステラ,31.5
+4115,append,31,てらてら,31.4
+4009,append,31,テレキャスタービーボーイ,31.7
+4070,append,31,バグ,31.5
+4142,append,31,ビバハピ,31.2
+4007,append,31,フェレス,31.7
+4130,append,31,ペンタトニック,31.1
+4145,append,31,ミルククラウン・オン・ソーネチカ,31.6
+4024,append,31,一千光年,31.4
+4144,append,31,千本桜,31.3
+4073,append,31,熱風,31.6
+4074,append,30,Flyer!,30.0
+4046,append,30,Flyway,30.7
+4147,append,30,WAVE,30.3
+4060,append,30,エンパープル,30.5
+4150,append,30,お気に召すまま,30.5
+4133,append,30,ザムザ,30.2
+4112,append,30,とても痛い痛がりたい,30.8
+4143,append,30,ドラマツルギー,30.4
+4004,append,30,モア！ジャンプ！モア！,30.7
+4033,append,30,レグルス,30.5
+4056,append,30,ロウワー,30.4
+4152,append,30,羽歌,30.4
+4083,append,30,虚ろを扇ぐ,30.5
+4110,append,30,世界を照らすテトラッド,30.8
+4017,append,30,青く駆けろ！,30.5
+4061,append,30,泡沫未来,30.6
+4136,append,30,劣等上等,30.4
+4148,append,30,傀儡のうつつ,30.6
+4057,append,29,Awake Now,29.5
+4105,append,29,Beyond the way,29.4
+4030,append,29,DAYBREAK FRONTLINE,29.9
+4098,append,29,ECHO,29.3
+4162,append,29,Gimme more!,29.5
+4120,append,29,MOTTO!!!,29.5
+4101,append,29,Sympathy,29.7
+4064,append,29,YY,29.6
+4099,append,29,イフ,29.6
+4111,append,29,インテグラル,29.5
+4006,append,29,シネマ,29.6
+4114,append,29,テトリス,29.7
+4043,append,29,トキヲ・ファンカ,29.8
+4116,append,29,はぐ,29.5
+4088,append,29,ハッピーシンセサイザ,29.6
+4041,append,29,みくみくにしてあげる♪【してやんよ】,29.2
+4076,append,29,ワールドワイドワンダー,29.6
+4096,append,29,ワーワーワールド,29.8
+4016,append,29,威風堂々,29.6
+4094,append,29,群青讃歌,29.2
+4044,append,29,酔いどれ知らず,29.4
+4122,append,29,箱庭のコラル,29.5
 4093,append,28,「１」,
 4054,append,28,Beat Eater,
 4049,append,28,Hand in Hand,
