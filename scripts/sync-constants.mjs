@@ -111,6 +111,7 @@ function emitMarkdown(master, append) {
     for (const r of rows) {
       const lv = r.play_level;
       if (lv !== lastLv) {
+        if (lastLv !== null) lines.push("");
         lines.push(`### Lv.${lv}`, "");
         lastLv = lv;
       }
