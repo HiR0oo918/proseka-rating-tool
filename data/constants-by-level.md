@@ -1,6 +1,6 @@
 # 定数入力用譜面リスト（レベル高い順）
 
-カタログから自動生成しています。定数は `chart_constant` に公式レベル.小数1桁で入れてください。
+カタログから自動生成しています。定数は `chart_constant` に小数1桁までで入れてください。公式レベルをまたぐ値も入力できます。
 
 入力用 CSV:
 
@@ -13,93 +13,93 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 
 ### Lv.37
 
-- MASTER What's up? Pop! `37.8`  `1575`
-- MASTER ヤミナベ!!!! `37.9`  `1645`
-- MASTER 人生 `37.8`  `1850`
+- MASTER What's up? Pop! `37.7`  `1575`
+- MASTER ヤミナベ!!!! `37.7`  `1645`
+- MASTER 人生 `37.7`  `1850`
 
 ### Lv.36
 
-- MASTER the EmpErroR `36.0`  `815`
+- MASTER the EmpErroR `36.5`  `815`
 
 ### Lv.35
 
 - MASTER Don't Fight The Music `35.9`  `820`
 - MASTER エンドマークに希望と涙を添えて `35.6`  `810`
 - MASTER マシンガンポエムドール `35.8`  `880`
-- MASTER 怪獣になりたい `35.4`  `3355`
-- MASTER 初音ミクの消失 `35.6`  `245`
-- MASTER 腐れ外道とチョコレゐト `35.7`  `1250`
-- MASTER 六兆年と一夜物語 `35.5`  `675`
+- MASTER 怪獣になりたい `35.3`  `3355`
+- MASTER 初音ミクの消失 `35.5`  `245`
+- MASTER 腐れ外道とチョコレゐト `35.9`  `1250`
+- MASTER 六兆年と一夜物語 `35.4`  `675`
 
 ### Lv.34
 
-- MASTER 0.0000034 `34.6`  `3455`
-- MASTER ÅMARA(大未来電脳) `34.4`  `1425`
+- MASTER 0.0000034 `34.4`  `3455`
+- MASTER ÅMARA(大未来電脳) `34.5`  `1425`
 - MASTER おぎゃりないざー `34.5`  `2430`
-- MASTER ダイジョブですか？ `34.5`  `2435`
+- MASTER ダイジョブですか？ `34.4`  `2435`
 - MASTER ネクラチューンサーカス `34.7`  `3340`
 - MASTER メモリア `34.2`  `2440`
-- MASTER 初音ミクの激唱 `34.9`  `655`
-- MASTER 初音狂奏曲第01番「彗惺」 `34.9`  `3775`
+- MASTER 初音ミクの激唱 `34.8`  `655`
+- MASTER 初音狂奏曲第01番「彗惺」 `34.7`  `3775`
 
 ### Lv.33
 
-- MASTER ANiMA `33.5`  `3725`
+- MASTER ANiMA `33.6`  `3725`
 - MASTER CHAOS `33.3`  `3720`
-- MASTER Internet Junk Junkie `33.2`  `3485`
-- MASTER MarbleBlue. `33.6`  `2245`
+- MASTER Internet Junk Junkie `33.3`  `3485`
+- MASTER MarbleBlue. `33.8`  `2245`
 - MASTER SAN値直葬 `33.0`  `3235`
-- MASTER ゴーストルール `33.6`  `995`
+- MASTER ゴーストルール `33.8`  `995`
 - MASTER トレジャーガーデン `33.5`  `3430`
-- MASTER プラネットヒーロー `33.3`  `2940`
+- MASTER プラネットヒーロー `33.4`  `2940`
 - MASTER ぼくらの16bit戦争 `33.7`  `1245`
-- MASTER ロストワンの号哭 `33.5`  `490`
+- MASTER ロストワンの号哭 `33.4`  `490`
 - MASTER 初音天地開闢神話 `33.8`  `930`
-- MASTER 嬢王 `33.4`  `2325`
-- MASTER 生命性シンドロウム `33.5`  `2715`
-- MASTER 超ナイト・オブ・ナイツ `33.3`  `3110`
-- MASTER 天藍のアイスヘヴン `33.2`  `3660`
+- MASTER 嬢王 `33.2`  `2325`
+- MASTER 生命性シンドロウム `33.7`  `2715`
+- MASTER 超ナイト・オブ・ナイツ `33.2`  `3110`
+- MASTER 天藍のアイスヘヴン `33.3`  `3660`
 
 ### Lv.32
 
-- MASTER Brand New Day `32.8`  `640`
+- MASTER Brand New Day `32.7`  `640`
 - MASTER CIRCUS PANIC!!! `32.7`  `2040`
-- MASTER folern `32.4`  `2235`
+- MASTER folern `32.3`  `2235`
 - MASTER IMAWANOKIWA `32.4`  `2920`
-- MASTER Sage `32.3`  `2240`
+- MASTER Sage `32.1`  `2240`
 - MASTER snooze `32.0`  `2770`
 - MASTER インビジブル `32.6`  `1420`
-- MASTER ウィーアーピコピコハンマーズ!!!! `32.4`  `3440`
-- MASTER おどりゃんせ `32.3`  `2795`
-- MASTER シルバーコレクター `32.2`  `2480`
-- MASTER セツナトリップ `32.9`  `1770`
-- MASTER チルドレンレコード `32.6`  `680`
+- MASTER ウィーアーピコピコハンマーズ!!!! `32.5`  `3440`
+- MASTER おどりゃんせ `32.2`  `2795`
+- MASTER シルバーコレクター `32.3`  `2480`
+- MASTER セツナトリップ `32.8`  `1770`
+- MASTER チルドレンレコード `32.5`  `680`
 - MASTER テオ `32.5`  `15`
-- MASTER ドクター＝ファンクビート `32.6`  `140`
-- MASTER トンデモワンダーズ `32.7`  `635`
-- MASTER バグ `32.2`  `1240`
-- MASTER ビターチョコデコレーション `32.4`  `645`
+- MASTER ドクター＝ファンクビート `32.7`  `140`
+- MASTER トンデモワンダーズ `32.6`  `635`
+- MASTER バグ `32.1`  `1240`
+- MASTER ビターチョコデコレーション `32.3`  `645`
 - MASTER ヒバナ -Reloaded- `32.9`  `30`
-- MASTER フィクサー `32.2`  `915`
-- MASTER フューチャー・イヴ `32.8`  `1365`
+- MASTER フィクサー `32.0`  `915`
+- MASTER フューチャー・イヴ `32.6`  `1365`
 - MASTER プロトディスコ `32.2`  `2805`
 - MASTER マンハッタン `32.4`  `2950`
-- MASTER 厨病激発ボーイ `32.3`  `2905`
-- MASTER 星界ちゃんと可不ちゃんのおつかい合騒曲 `32.9`  `1640`
-- MASTER 千本桜 `32.4`  `550`
+- MASTER 厨病激発ボーイ `32.5`  `2905`
+- MASTER 星界ちゃんと可不ちゃんのおつかい合騒曲 `32.8`  `1640`
+- MASTER 千本桜 `32.5`  `550`
 - MASTER 超最終鬼畜妹フランドール・Ｓ `32.2`  `2515`
-- MASTER 熱異常 `32.3`  `2255`
-- MASTER 脳漿炸裂ガール `32.7`  `1145`
-- MASTER 拝啓ドッペルゲンガー `32.9`  `875`
-- EXPERT 怪獣になりたい `（未設定 → 仮 32.5）`  `3354`
+- MASTER 熱異常 `32.5`  `2255`
+- MASTER 脳漿炸裂ガール `32.6`  `1145`
+- MASTER 拝啓ドッペルゲンガー `32.8`  `875`
+- EXPERT 怪獣になりたい `32.4`  `3354`
 
 ### Lv.31
 
-- MASTER 99 Glooms `31.1`  `3745`
-- MASTER ARQETYPE `31.4`  `2030`
+- MASTER 99 Glooms `31.2`  `3745`
+- MASTER ARQETYPE `32.4`  `2030`
 - MASTER Blackjack `31.0`  `2710`
 - MASTER D/N/A `31.5`  `2980`
-- MASTER Happy Halloween `31.6`  `860`
+- MASTER Happy Halloween `31.5`  `860`
 - MASTER HERO `31.6`  `2070`
 - MASTER I know 愛脳. `31.5`  `2520`
 - MASTER imaginary love story `31.4`  `2100`
@@ -107,131 +107,131 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - MASTER Life Will Change `31.6`  `3240`
 - MASTER limbo `31.5`  `2080`
 - MASTER Mr. Showtime `31.6`  `1665`
-- MASTER Nyanyanyanyanyanyanya! `31.5`  `3565`
+- MASTER Nyanyanyanyanyanyanya! `31.3`  `3565`
 - MASTER Polar Star `31.4`  `3050`
-- MASTER Vampire's ∞ pathoS `31.6`  `1670`
+- MASTER Vampire's ∞ pathoS `31.5`  `1670`
 - MASTER アイ・メイカー！ `31.5`  `3705`
 - MASTER アイデンティティ `31.2`  `1155`
-- MASTER アクセラレイト `31.1`  `2915`
-- MASTER アディショナルメモリー `31.1`  `3755`
+- MASTER アクセラレイト `31.0`  `2915`
+- MASTER アディショナルメモリー `31.2`  `3755`
 - MASTER アベリア `31.2`  `3385`
 - MASTER アンハッピーリフレイン `31.5`  `1440`
-- MASTER アンヘル `31.1`  `2810`
-- MASTER イガク `31.2`  `2575`
-- MASTER エゴイスト `31.6`  `1495`
+- MASTER アンヘル `31.2`  `2810`
+- MASTER イガク `31.3`  `2575`
+- MASTER エゴイスト `31.7`  `1495`
 - MASTER エゴロック `31.8`  `1125`
 - MASTER オーバーライド `31.4`  `2605`
-- MASTER おこちゃま戦争 `31.6`  `1535`
+- MASTER おこちゃま戦争 `31.7`  `1535`
 - MASTER オルターエゴ `31.8`  `835`
-- MASTER カゲロウデイズ `31.8`  `855`
-- MASTER キティ `31.3`  `1765`
+- MASTER カゲロウデイズ `31.9`  `855`
+- MASTER キティ `31.1`  `1765`
 - MASTER きゅうくらりん `31.4`  `1805`
 - MASTER キラー `31.3`  `2370`
-- MASTER クイーンオブハート `31.4`  `2960`
-- MASTER グリーンライツ・セレナーデ `31.9`  `230`
+- MASTER クイーンオブハート `31.0`  `2960`
+- MASTER グリーンライツ・セレナーデ `31.0`  `230`
 - MASTER げんてん `31.3`  `3345`
 - MASTER コスモスパイス `31.6`  `1165`
 - MASTER ジェヘナ `31.5`  `1360`
 - MASTER ジャンキーナイトタウンオーケストラ `31.7`  `420`
-- MASTER ショウタイム・ルーラー `31.7`  `800`
-- MASTER スーサイドパレヱド `31.2`  `3030`
+- MASTER ショウタイム・ルーラー `31.6`  `800`
+- MASTER スーサイドパレヱド `31.1`  `3030`
 - MASTER すきなことだけでいいです `31.4`  `1835`
-- MASTER ずんだパーリナイ `31.5`  `1895`
+- MASTER ずんだパーリナイ `31.7`  `1895`
 - MASTER そうだった！！ `31.5`  `825`
-- MASTER ちがう!!! `31.4`  `2375`
-- MASTER チュルリラ・チュルリラ・ダッダッダ！ `31.8`  `440`
-- MASTER チルノのパーフェクトさんすう学園 `31.4`  `3120`
-- MASTER とうほう☆ワンダーランド `31.5`  `3115`
-- MASTER ときめきジェットコースター `31.4`  `2140`
+- MASTER ちがう!!! `31.3`  `2375`
+- MASTER チュルリラ・チュルリラ・ダッダッダ！ `31.7`  `440`
+- MASTER チルノのパーフェクトさんすう学園 `31.6`  `3120`
+- MASTER とうほう☆ワンダーランド `31.8`  `3115`
+- MASTER ときめきジェットコースター `31.3`  `2140`
 - MASTER トラッシュ・アンド・トラッシュ！ `31.5`  `1675`
 - MASTER にっこり^^調査隊のテーマ `31.5`  `890`
-- MASTER ネトゲ廃人シュプレヒコール `31.8`  `1490`
+- MASTER ネトゲ廃人シュプレヒコール `31.7`  `1490`
 - MASTER ノンブレス・オブリージュ `31.4`  `1340`
 - MASTER バイオレンストリガー `31.4`  `3515`
-- MASTER パリィ `31.3`  `2765`
+- MASTER パリィ `31.2`  `2765`
 - MASTER ヒアソビ `31.4`  `2165`
-- MASTER フロイライン＝オジョウサマ `31.5`  `3570`
+- MASTER フロイライン＝オジョウサマ `31.6`  `3570`
 - MASTER フロイライン＝ビブリォチカ `31.7`  `1255`
-- MASTER ぼうけんのしょがきえました！ `31.8`  `390`
+- MASTER ぼうけんのしょがきえました！ `31.9`  `390`
 - MASTER ポジティブ☆ダンスタイム `31.8`  `610`
 - MASTER ポッピンキャンディ☆フィーバー！ `31.4`  `2470`
 - MASTER メズマライザー `31.5`  `2655`
-- MASTER モア！ジャンプ！モア！ `31.5`  `495`
-- MASTER ももいろの鍵 `31.8`  `1540`
-- MASTER ヤンキーボーイ・ヤンキーガール `31.2`  `2930`
+- MASTER モア！ジャンプ！モア！ `31.4`  `495`
+- MASTER ももいろの鍵 `31.7`  `1540`
+- MASTER ヤンキーボーイ・ヤンキーガール `31.3`  `2930`
 - MASTER ライアーダンサー `31.2`  `2545`
-- MASTER ルルブ `31.5`  `2935`
-- MASTER ロウワー `31.3`  `935`
-- MASTER ローリンガール `31.6`  `565`
-- MASTER ロケットサイダー `31.4`  `3325`
+- MASTER ルルブ `31.6`  `2935`
+- MASTER ロウワー `31.5`  `935`
+- MASTER ローリンガール `31.7`  `565`
+- MASTER ロケットサイダー `31.3`  `3325`
 - MASTER ロスタイムメモリー `31.7`  `3750`
 - MASTER ワンダーラスト `31.5`  `3555`
 - MASTER 悪魔の踊り方 `31.4`  `665`
-- MASTER 一億年恋してる `31.9`  `3975`
-- MASTER 右肩の蝶 `31.5`  `885`
-- MASTER 化けの花 `31.5`  `2745`
+- MASTER 一億年恋してる `31.7`  `3975`
+- MASTER 右肩の蝶 `31.4`  `885`
+- MASTER 化けの花 `31.6`  `2745`
 - MASTER 気まぐれメルシィ `31.6`  `1405`
-- MASTER 君色マリンスノウ `31.7`  `1030`
+- MASTER 君色マリンスノウ `31.5`  `1030`
 - MASTER 限りなく灰色へ `31.3`  `450`
-- MASTER 黒塗り世界宛て書簡 `31.1`  `3520`
+- MASTER 黒塗り世界宛て書簡 `31.0`  `3520`
 - MASTER 最愛人生ランナー `31.4`  `3445`
 - MASTER 私の恋はヘルファイア `31.5`  `1505`
 - MASTER 十六歳の心臓 `31.1`  `2340`
 - MASTER 心泥夢(syndrome) `31.6`  `2220`
-- MASTER 新人類 `31.4`  `1905`
-- MASTER 世界を照らすテトラッド `31.4`  `2055`
+- MASTER 新人類 `31.0`  `1905`
+- MASTER 世界を照らすテトラッド `31.5`  `2055`
 - MASTER 成敗いたAAAAAす！ `31.5`  `2360`
-- MASTER 正解 `（未設定 → 仮 31.5）`  `4191`
+- MASTER 正解 `31.5`  `4191`
 - MASTER 脱法ロック `31.8`  `105`
-- MASTER 地球最後の告白を `31.8`  `770`
+- MASTER 地球最後の告白を `31.9`  `770`
 - MASTER 庭師のおはなしによると `31.6`  `3165`
 - MASTER 天使のクローバー `31.6`  `560`
 - MASTER 電光刹歌 `31.7`  `3425`
 - MASTER 東京テディベア `31.5`  `1980`
-- MASTER 徳川カップヌードル禁止令 `31.7`  `1170`
-- MASTER 脳内革命ガール `31.2`  `1720`
-- MASTER 卑怯戦隊うろたんだー `31.4`  `3305`
+- MASTER 徳川カップヌードル禁止令 `31.6`  `1170`
+- MASTER 脳内革命ガール `31.3`  `1720`
+- MASTER 卑怯戦隊うろたんだー `31.5`  `3305`
 - MASTER 魔法みたいなミュージック！ `31.5`  `1585`
-- MASTER 魔法少女幸福論 `31.2`  `3575`
+- MASTER 魔法少女幸福論 `31.1`  `3575`
 - MASTER 未完成讃歌 `31.5`  `1270`
-- MASTER 流星のパルス `31.4`  `865`
-- MASTER 霽れを待つ `31.3`  `485`
-- EXPERT 0.0000034 `（未設定 → 仮 31.5）`  `3454`
-- EXPERT the EmpErroR `（未設定 → 仮 31.5）`  `814`
-- EXPERT What's up? Pop! `（未設定 → 仮 31.5）`  `1574`
-- EXPERT エンドマークに希望と涙を添えて `（未設定 → 仮 31.5）`  `809`
-- EXPERT おぎゃりないざー `（未設定 → 仮 31.5）`  `2429`
-- EXPERT ダイジョブですか？ `（未設定 → 仮 31.5）`  `2434`
-- EXPERT ネクラチューンサーカス `（未設定 → 仮 31.5）`  `3339`
-- EXPERT マシンガンポエムドール `（未設定 → 仮 31.5）`  `879`
-- EXPERT メモリア `（未設定 → 仮 31.5）`  `2439`
-- EXPERT ヤミナベ!!!! `（未設定 → 仮 31.5）`  `1644`
-- EXPERT 初音狂奏曲第01番「彗惺」 `（未設定 → 仮 31.5）`  `3774`
-- EXPERT 嬢王 `（未設定 → 仮 31.5）`  `2324`
-- EXPERT 人生 `（未設定 → 仮 31.5）`  `1849`
+- MASTER 流星のパルス `31.5`  `865`
+- MASTER 霽れを待つ `31.2`  `485`
+- EXPERT 0.0000034 `31.4`  `3454`
+- EXPERT the EmpErroR `31.7`  `814`
+- EXPERT What's up? Pop! `31.5`  `1574`
+- EXPERT エンドマークに希望と涙を添えて `31.7`  `809`
+- EXPERT おぎゃりないざー `31.3`  `2429`
+- EXPERT ダイジョブですか？ `31.8`  `2434`
+- EXPERT ネクラチューンサーカス `31.2`  `3339`
+- EXPERT マシンガンポエムドール `31.9`  `879`
+- EXPERT メモリア `31.0`  `2439`
+- EXPERT ヤミナベ!!!! `31.9`  `1644`
+- EXPERT 初音狂奏曲第01番「彗惺」 `31.1`  `3774`
+- EXPERT 嬢王 `31.3`  `2324`
+- EXPERT 人生 `31.8`  `1849`
 
 ### Lv.30
 
-- MASTER Awake Now `30.4`  `1220`
-- MASTER Calc. `30.4`  `1215`
-- MASTER Decade `30.5`  `1595`
+- MASTER Awake Now `30.3`  `1220`
+- MASTER Calc. `30.6`  `1215`
+- MASTER Decade `30.4`  `1595`
 - MASTER Disco No.39 `30.8`  `1995`
 - MASTER Glory Steady Go! `30.7`  `830`
 - MASTER Help me, ERINNNNNN!! `30.2`  `2510`
 - MASTER KING `30.6`  `690`
-- MASTER M@GICAL☆CURE! LOVE ♥ SHOT! `30.4`  `2760`
+- MASTER M@GICAL☆CURE! LOVE ♥ SHOT! `30.3`  `2760`
 - MASTER magic number `30.6`  `805`
-- MASTER Masquerade `30.1`  `3730`
-- MASTER METEOR `30.4`  `1685`
+- MASTER Masquerade `30.2`  `3730`
+- MASTER METEOR `30.3`  `1685`
 - MASTER ONESELF `30.5`  `1135`
-- MASTER RAD DOGS `30.6`  `505`
+- MASTER RAD DOGS `30.7`  `505`
 - MASTER SHIAWASE FOR YOU! `30.4`  `3595`
-- MASTER SnowMix♪ `30.7`  `1635`
-- MASTER STAGE OF SEKAI `30.6`  `795`
-- MASTER the WALL `30.6`  `1295`
+- MASTER SnowMix♪ `30.6`  `1635`
+- MASTER STAGE OF SEKAI `30.7`  `795`
+- MASTER the WALL `30.7`  `1295`
 - MASTER T氏の話を信じるな `30.5`  `3635`
 - MASTER Voices `30.4`  `1180`
-- MASTER あちこちデートさん `30.4`  `2580`
+- MASTER あちこちデートさん `30.5`  `2580`
 - MASTER アトラクトライト `30.4`  `1605`
 - MASTER アルカリレットウセイ `30.2`  `3630`
 - MASTER アンチサイノウ `30.5`  `3940`
@@ -240,7 +240,7 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - MASTER いますぐ輪廻 `30.3`  `3665`
 - MASTER ヴァンパイア `30.4`  `1065`
 - MASTER ヴィーナス `30.1`  `3315`
-- MASTER え？あぁ、そう。 `30.5`  `2185`
+- MASTER え？あぁ、そう。 `30.6`  `2185`
 - MASTER エクスプロウル `30.3`  `3180`
 - MASTER エターナルアリア `30.7`  `1820`
 - MASTER エンヴィキャットウォーク `30.5`  `2975`
@@ -1371,14 +1371,14 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - APPEND Brand New Day `35.4`  `4013`
 - APPEND CHAOS `35.3`  `4155`
 - APPEND folern `35.9`  `4026`
-- APPEND IMAWANOKIWA `35.4`  `4131`
+- APPEND IMAWANOKIWA `36.4`  `4131`
 - APPEND 超最終鬼畜妹フランドール・Ｓ `35.5`  `4053`
 - APPEND 六兆年と一夜物語 `35.7`  `4141`
 
 ### Lv.34
 
-- APPEND チルドレンレコード `34.6`  `5369`
-- APPEND ヒバナ -Reloaded- `34.5`  `4002`
+- APPEND チルドレンレコード `35.6`  `5369`
+- APPEND ヒバナ -Reloaded- `35.5`  `4002`
 - APPEND フュージョン `34.3`  `4097`
 - APPEND プロトディスコ `34.1`  `4089`
 - APPEND 東京テディベア `34.6`  `4045`
@@ -1454,7 +1454,7 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 
 ### Lv.29
 
-- APPEND Awake Now `29.5`  `4057`
+- APPEND Awake Now `30.5`  `4057`
 - APPEND Beyond the way `29.4`  `4105`
 - APPEND DAYBREAK FRONTLINE `29.9`  `4030`
 - APPEND ECHO `29.3`  `4098`

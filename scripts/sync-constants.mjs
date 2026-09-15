@@ -127,7 +127,7 @@ function emitMarkdown(master, append) {
   return [
     "# 定数入力用譜面リスト（レベル高い順）",
     "",
-    "カタログから自動生成しています。定数は `chart_constant` に公式レベル.小数1桁で入れてください。",
+    "カタログから自動生成しています。定数は `chart_constant` に小数1桁までで入れてください。公式レベルをまたぐ値も入力できます。",
     "",
     "入力用 CSV:",
     "",
@@ -177,9 +177,10 @@ function cmdApply() {
     if (!Number.isFinite(n) || n < 0) {
       throw new Error(`不正な定数: chart_id=${r.chart_id} value=${raw}`);
     }
-    const level = Number(r.play_level);
-    const digit = Math.min(9, Math.max(0, Math.round(n * 10) % 10));
-    r.chart_constant = (level + digit / 10).toFixed(1);
+    if (Math.abs(n * 10 - Math.round(n * 10)) > Number.EPSILON * 10) {
+      throw new Error(`定数は小数1桁まで: chart_id=${r.chart_id} value=${raw}`);
+    }
+    r.chart_constant = n.toFixed(1);
     filled += 1;
   }
 
