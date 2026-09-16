@@ -40,7 +40,7 @@ npm run dev
 
 ## Cloudflare Workers
 
-OpenNext（`@opennextjs/cloudflare`）でデプロイします。Worker 名は `proseka-rating-tool` です（`wrangler.jsonc` の `name` と自己参照バインディングを一致させてください）。
+OpenNext（`@opennextjs/cloudflare`）でデプロイします。Worker 名は `prod` です（`wrangler.jsonc` の `name` と自己参照バインディングを一致させてください）。
 
 Git 連携する場合の例:
 
