@@ -56,8 +56,6 @@ type Pool = "master-below" | "append";
 type DiffFilter = "all" | "hard" | "expert" | "master";
 type SortKey =
   | "title"
-  | "level-desc"
-  | "level-asc"
   | "constant-desc"
   | "constant-asc"
   | "rating";
@@ -142,7 +140,7 @@ export function RatingApp() {
   const [pool, setPool] = useState<Pool>("master-below");
   const [query, setQuery] = useState("");
   const [diffFilter, setDiffFilter] = useState<DiffFilter>("all");
-  const [sortKey, setSortKey] = useState<SortKey>("level-desc");
+  const [sortKey, setSortKey] = useState<SortKey>("constant-desc");
   const [enteredOnly, setEnteredOnly] = useState(false);
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [importError, setImportError] = useState<string | null>(null);
@@ -220,12 +218,6 @@ export function RatingApp() {
     };
     const constantOf = (chart: Chart) => effectiveConstant(chart, null).value;
     list.sort((a, b) => {
-      if (sortKey === "level-desc") {
-        return b.playLevel - a.playLevel || a.title.localeCompare(b.title, "ja");
-      }
-      if (sortKey === "level-asc") {
-        return a.playLevel - b.playLevel || a.title.localeCompare(b.title, "ja");
-      }
       if (sortKey === "constant-desc") {
         return constantOf(b) - constantOf(a) || a.title.localeCompare(b.title, "ja");
       }
@@ -601,8 +593,6 @@ function PoolPanels({
               onChange={(e) => onSortKey(e.target.value as SortKey)}
             >
               <option value="title">曲名</option>
-              <option value="level-desc">レベル高い順</option>
-              <option value="level-asc">レベル低い順</option>
               <option value="constant-desc">譜面定数高い順</option>
               <option value="constant-asc">譜面定数低い順</option>
               <option value="rating">単曲レート高い順</option>
