@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { renderBestImage } from "@/lib/best-image";
+import { renderBestImage, type BestImageRow } from "@/lib/best-image";
 import { charts, DIFFICULTY_BG, DIFFICULTY_LABEL } from "@/lib/charts";
 import {
   bestAverage,
@@ -925,7 +925,7 @@ function BestList({
     setBusy(true);
     setError(null);
     try {
-      const imageRows = (source: RankedRow[]) =>
+      const imageRows = (source: RankedRow[]): BestImageRow[] =>
         source.map((row) => ({
           title: row.chart.title,
           difficulty: row.chart.difficulty,
