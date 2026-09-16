@@ -300,8 +300,7 @@ export function RatingApp() {
           </h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <HelpDialog settings={settings} />
-          <RulesDialog settings={settings} />
+          <SpecificationsDialog settings={settings} />
           <Button variant="outline" onClick={exportBackup}>
             書き出し
           </Button>
@@ -1012,18 +1011,20 @@ function BestList({
   );
 }
 
-function HelpDialog({ settings }: { settings: RatingConfig }) {
+function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
   return (
     <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>計算式</DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogTrigger render={<Button variant="outline" />}>仕様</DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>計算式</DialogTitle>
+          <DialogTitle>仕様</DialogTitle>
           <DialogDescription>
-            非公式です。判定の重みと単曲レートの境界は全員共通です。
+            非公式です。設定は全員共通です。
+            {settings.updatedAt ? ` 更新日 ${settings.updatedAt}。` : ""}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 text-sm">
+          <h3 className="font-medium">計算式</h3>
           <p>
             PERFECT = 総ノーツ − GREAT − GOOD − BAD − MISS。各ノーツの重みは均等です。
           </p>
@@ -1055,69 +1056,42 @@ function HelpDialog({ settings }: { settings: RatingConfig }) {
             を仮置きします。ベスト枠が埋まっていないときは、足りない枠を 0 として割ります。
           </p>
         </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function RulesDialog({ settings }: { settings: RatingConfig }) {
-  return (
-    <Dialog>
-      <DialogTrigger render={<Button variant="outline" />}>規則</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
-        <DialogHeader>
-          <DialogTitle>レーティング規則</DialogTitle>
-          <DialogDescription>
-            全員共通です。変更は管理者がリポジトリの JSON / CSV を直してデプロイします。
-            {settings.updatedAt ? ` 更新日 ${settings.updatedAt}。` : ""}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Label>MASTER以下の譜面数</Label>
-            <p className="tabular-nums text-sm">{settings.otherBestCount}</p>
+        <div className="space-y-3 border-t pt-4">
+          <h3 className="font-medium">共通設定</h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Label>MASTER以下の譜面数</Label>
+              <p className="tabular-nums text-sm">{settings.otherBestCount}</p>
+            </div>
+            <div className="space-y-1">
+              <Label>APPEND の譜面数</Label>
+              <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
+            </div>
           </div>
-          <div className="space-y-1">
-            <Label>APPEND の譜面数</Label>
-            <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
+          <div className="space-y-2">
+            <Label>判定の重み</Label>
+            <p className="text-xs text-muted-foreground">
+              達成率の分子に使います。分母は PERFECT の重み × 総ノーツです。
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+              {(
+                [
+                  ["perfect", "PERFECT"],
+                  ["great", "GREAT"],
+                  ["good", "GOOD"],
+                  ["bad", "BAD"],
+                  ["miss", "MISS"],
+                ] as const
+              ).map(([key, label]) => (
+                <div key={key} className="space-y-1">
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                  <p className="tabular-nums text-sm">
+                    {settings.judgementWeights[key]}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="space-y-2">
-          <Label>判定の重み</Label>
-          <p className="text-xs text-muted-foreground">
-            達成率の分子に使います。分母は PERFECT の重み × 総ノーツです。
-          </p>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-            {(
-              [
-                ["perfect", "PERFECT"],
-                ["great", "GREAT"],
-                ["good", "GOOD"],
-                ["bad", "BAD"],
-                ["miss", "MISS"],
-              ] as const
-            ).map(([key, label]) => (
-              <div key={key} className="space-y-1">
-                <p className="text-xs text-muted-foreground">{label}</p>
-                <p className="tabular-nums text-sm">
-                  {settings.judgementWeights[key]}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label>単曲レートの境界</Label>
-          <p className="text-xs text-muted-foreground">
-            「定数+」は譜面定数への加減、「固定」は達成率に対するレートそのものです。境界の間は線形補間します。
-          </p>
-          <ul className="space-y-1 font-mono text-sm">
-            {settings.ratingPoints.map((point) => (
-              <li key={point.percent}>
-                {point.percent}% → {describeRatingPoint(point)}
-              </li>
-            ))}
-          </ul>
         </div>
       </DialogContent>
     </Dialog>
