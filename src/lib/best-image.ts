@@ -48,20 +48,37 @@ function truncate(ctx: CanvasRenderingContext2D, text: string, maxWidth: number)
   return `${s}…`;
 }
 
-export async function renderBestImage(opts: {
+export type BestImageSection = {
   poolLabel: string;
   average: number;
   cap: number;
   rows: BestImageRow[];
+};
+
+export async function renderBestImage(opts: {
+  sections: BestImageSection[];
 }): Promise<Blob> {
-  const cols = opts.cap <= 20 ? 5 : 6;
-  const rowsCount = Math.ceil(opts.cap / cols);
   const cell = 172;
   const gap = 12;
   const pad = 36;
-  const header = 118;
-  const width = pad * 2 + cols * cell + (cols - 1) * gap;
-  const height = pad + header + rowsCount * (cell + 52) + (rowsCount - 1) * gap + pad;
+  const titleHeader = 64;
+  const sectionHeader = 86;
+  const sectionGap = 32;
+  const layouts = opts.sections.map((section) => {
+    const cols = section.cap <= 20 ? 5 : 6;
+    const rowsCount = Math.ceil(section.cap / cols);
+    const gridHeight =
+      rowsCount * (cell + 52) + Math.max(0, rowsCount - 1) * gap;
+    return { cols, height: sectionHeader + gridHeight };
+  });
+  const maxCols = Math.max(...layouts.map((layout) => layout.cols));
+  const width = pad * 2 + maxCols * cell + (maxCols - 1) * gap;
+  const height =
+    pad +
+    titleHeader +
+    layouts.reduce((sum, layout) => sum + layout.height, 0) +
+    Math.max(0, opts.sections.length - 1) * sectionGap +
+    pad;
   const scale = 2;
 
   const canvas = document.createElement("canvas");
@@ -80,85 +97,104 @@ export async function renderBestImage(opts: {
   ctx.fillStyle = "#ffffff";
   ctx.font = "700 28px 'Noto Sans JP', sans-serif";
   ctx.fillText("プロセカレーティング", pad, pad + 28);
-  ctx.font = "600 18px 'Noto Sans JP', sans-serif";
-  ctx.fillStyle = "#d8c8e8";
-  ctx.fillText(opts.poolLabel, pad, pad + 56);
-
-  ctx.font = "700 42px ui-monospace, monospace";
-  ctx.fillStyle = "#ffffff";
-  const ratingText = formatRating(opts.average);
-  ctx.fillText(ratingText, pad, pad + 104);
-  const ratingWidth = ctx.measureText(ratingText).width;
-  ctx.font = "500 16px 'Noto Sans JP', sans-serif";
-  ctx.fillStyle = "#b8a8c8";
-  ctx.fillText(
-    `${opts.rows.length} / ${opts.cap} 譜面`,
-    pad + ratingWidth + 16,
-    pad + 98,
-  );
 
   const jackets = await Promise.all(
-    opts.rows.map((row) => loadJacket(row.jacketAsset)),
+    opts.sections.map((section) =>
+      Promise.all(section.rows.map((row) => loadJacket(row.jacketAsset))),
+    ),
   );
 
-  const slots = Array.from({ length: opts.cap }, (_, i) => opts.rows[i] ?? null);
+  let sectionY = pad + titleHeader;
+  opts.sections.forEach((section, sectionIndex) => {
+    const { cols, height: sectionHeight } = layouts[sectionIndex];
 
-  slots.forEach((row, i) => {
-    const col = i % cols;
-    const r = Math.floor(i / cols);
-    const x = pad + col * (cell + gap);
-    const y = pad + header + r * (cell + 52 + gap);
+    ctx.font = "600 18px 'Noto Sans JP', sans-serif";
+    ctx.fillStyle = "#d8c8e8";
+    ctx.fillText(section.poolLabel, pad, sectionY + 20);
 
-    roundRect(ctx, x, y, cell, cell, 14);
-    ctx.fillStyle = "#3a2a48";
-    ctx.fill();
-
-    const jacket = row ? jackets[i] : null;
-    ctx.save();
-    roundRect(ctx, x, y, cell, cell, 14);
-    ctx.clip();
-    if (jacket) {
-      ctx.drawImage(jacket, x, y, cell, cell);
-    } else {
-      ctx.fillStyle = "#4a3a58";
-      ctx.fillRect(x, y, cell, cell);
-      ctx.fillStyle = "#8a7a98";
-      ctx.font = "600 14px 'Noto Sans JP', sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText(row ? "NO JACKET" : "EMPTY", x + cell / 2, y + cell / 2);
-      ctx.textAlign = "left";
-    }
-    ctx.restore();
-
-    const badgeH = 22;
-    roundRect(ctx, x + 8, y + 8, 78, badgeH, 11);
-    ctx.fillStyle = row
-      ? DIFFICULTY_SOLID[row.difficulty]
-      : "#6a5a78";
-    ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.font = "700 11px 'Noto Sans JP', sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(
-      row ? `${DIFFICULTY_LABEL[row.difficulty]} ${row.playLevel}` : `${i + 1}`,
-      x + 47,
-      y + 23,
-    );
-    ctx.textAlign = "left";
-
+    ctx.font = "700 38px ui-monospace, monospace";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "700 13px 'Noto Sans JP', sans-serif";
-    const name = row ? truncate(ctx, row.title, cell) : "—";
-    ctx.fillText(name, x, y + cell + 18);
-    ctx.font = "600 12px ui-monospace, monospace";
-    ctx.fillStyle = "#e8d8f8";
+    const ratingText = formatRating(section.average);
+    ctx.fillText(ratingText, pad, sectionY + 66);
+    const ratingWidth = ctx.measureText(ratingText).width;
+    ctx.font = "500 16px 'Noto Sans JP', sans-serif";
+    ctx.fillStyle = "#b8a8c8";
     ctx.fillText(
-      row
-        ? `#${i + 1}  ${formatRating(row.rating)}  ${formatPercent(row.achievement)}`
-        : `#${i + 1}`,
-      x,
-      y + cell + 38,
+      `${section.rows.length} / ${section.cap} 譜面`,
+      pad + ratingWidth + 16,
+      sectionY + 61,
     );
+
+    const slots = Array.from(
+      { length: section.cap },
+      (_, i) => section.rows[i] ?? null,
+    );
+
+    slots.forEach((row, i) => {
+      const col = i % cols;
+      const r = Math.floor(i / cols);
+      const x = pad + col * (cell + gap);
+      const y = sectionY + sectionHeader + r * (cell + 52 + gap);
+
+      roundRect(ctx, x, y, cell, cell, 14);
+      ctx.fillStyle = "#3a2a48";
+      ctx.fill();
+
+      const jacket = row ? jackets[sectionIndex][i] : null;
+      ctx.save();
+      roundRect(ctx, x, y, cell, cell, 14);
+      ctx.clip();
+      if (jacket) {
+        ctx.drawImage(jacket, x, y, cell, cell);
+      } else {
+        ctx.fillStyle = "#4a3a58";
+        ctx.fillRect(x, y, cell, cell);
+        ctx.fillStyle = "#8a7a98";
+        ctx.font = "600 14px 'Noto Sans JP', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(
+          row ? "NO JACKET" : "EMPTY",
+          x + cell / 2,
+          y + cell / 2,
+        );
+        ctx.textAlign = "left";
+      }
+      ctx.restore();
+
+      const badgeH = 22;
+      roundRect(ctx, x + 8, y + 8, 78, badgeH, 11);
+      ctx.fillStyle = row
+        ? DIFFICULTY_SOLID[row.difficulty]
+        : "#6a5a78";
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.font = "700 11px 'Noto Sans JP', sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(
+        row
+          ? `${DIFFICULTY_LABEL[row.difficulty]} ${row.playLevel}`
+          : `${i + 1}`,
+        x + 47,
+        y + 23,
+      );
+      ctx.textAlign = "left";
+
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "700 13px 'Noto Sans JP', sans-serif";
+      const name = row ? truncate(ctx, row.title, cell) : "—";
+      ctx.fillText(name, x, y + cell + 18);
+      ctx.font = "600 12px ui-monospace, monospace";
+      ctx.fillStyle = "#e8d8f8";
+      ctx.fillText(
+        row
+          ? `#${i + 1}  ${formatRating(row.rating)}  ${formatPercent(row.achievement)}`
+          : `#${i + 1}`,
+        x,
+        y + cell + 38,
+      );
+    });
+
+    sectionY += sectionHeight + sectionGap;
   });
 
   return new Promise((resolve, reject) => {

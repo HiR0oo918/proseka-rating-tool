@@ -399,6 +399,8 @@ export function RatingApp() {
             results={results}
             settings={settings}
             ranked={otherRanked}
+            otherRanked={otherRanked}
+            appendRanked={appendRanked}
             onJudgement={upsertJudgement}
             onAp={setAllPerfect}
             onClear={clearChart}
@@ -431,6 +433,8 @@ export function RatingApp() {
             results={results}
             settings={settings}
             ranked={appendRanked}
+            otherRanked={otherRanked}
+            appendRanked={appendRanked}
             onJudgement={upsertJudgement}
             onAp={setAllPerfect}
             onClear={clearChart}
@@ -504,6 +508,8 @@ function PoolPanels({
   results,
   settings,
   ranked,
+  otherRanked,
+  appendRanked,
   onJudgement,
   onAp,
   onClear,
@@ -524,6 +530,8 @@ function PoolPanels({
   results: Record<string, Judgement>;
   settings: RatingConfig;
   ranked: RankedRow[];
+  otherRanked: RankedRow[];
+  appendRanked: RankedRow[];
   onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
@@ -650,23 +658,13 @@ function PoolPanels({
         </div>
       ) : (
       <div className="space-y-6">
-        {ranked.length === 0 ? (
-          <EmptyState
-            title="まだリザルトがありません"
-            body="譜面入力で GREAT 以下を入れるか、AP を押すとここにベスト内訳が出ます。"
-          />
-        ) : (
-          <BestList
-            title={bestTitle}
-            poolLabel={pool === "append" ? "APPEND" : "MASTER以下"}
-            cap={
-              pool === "append"
-                ? settings.appendBestCount
-                : settings.otherBestCount
-            }
-            rows={ranked}
-          />
-        )}
+        <BestList
+          title={bestTitle}
+          rows={ranked}
+          otherRows={otherRanked}
+          appendRows={appendRanked}
+          settings={settings}
+        />
       </div>
       )}
     </div>
@@ -907,29 +905,27 @@ function ChartCard({
 
 function BestList({
   title,
-  poolLabel,
-  cap,
   rows,
+  otherRows,
+  appendRows,
+  settings,
 }: {
   title: string;
-  poolLabel: string;
-  cap: number;
   rows: RankedRow[];
+  otherRows: RankedRow[];
+  appendRows: RankedRow[];
+  settings: RatingConfig;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const average = rows.reduce((sum, row) => sum + row.rating, 0) / cap;
 
   async function saveImage() {
     setBusy(true);
     setError(null);
     try {
       const { renderBestImage } = await import("@/lib/best-image");
-      const blob = await renderBestImage({
-        poolLabel,
-        average,
-        cap,
-        rows: rows.map((row) => ({
+      const imageRows = (source: RankedRow[]) =>
+        source.map((row) => ({
           title: row.chart.title,
           difficulty: row.chart.difficulty,
           playLevel: row.chart.playLevel,
@@ -937,12 +933,31 @@ function BestList({
           achievement: row.achievement,
           rating: row.rating,
           jacketAsset: row.chart.jacketAsset,
-        })),
+        }));
+      const blob = await renderBestImage({
+        sections: [
+          {
+            poolLabel: "MASTER以下",
+            average:
+              otherRows.reduce((sum, row) => sum + row.rating, 0) /
+              settings.otherBestCount,
+            cap: settings.otherBestCount,
+            rows: imageRows(otherRows),
+          },
+          {
+            poolLabel: "APPEND",
+            average:
+              appendRows.reduce((sum, row) => sum + row.rating, 0) /
+              settings.appendBestCount,
+            cap: settings.appendBestCount,
+            rows: imageRows(appendRows),
+          },
+        ],
       });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `pjsk-best-${poolLabel}.png`;
+      a.download = "pjsk-best.png";
       a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
@@ -966,7 +981,7 @@ function BestList({
           </div>
           <Button
             variant="outline"
-            disabled={busy || rows.length === 0}
+            disabled={busy || (otherRows.length === 0 && appendRows.length === 0)}
             onClick={() => void saveImage()}
           >
             {busy ? "生成中…" : "ベスト枠画像"}
