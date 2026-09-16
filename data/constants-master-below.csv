@@ -302,12 +302,12 @@ chart_id,difficulty,play_level,title,chart_constant
 405,master,30,夜咄ディセイブ,30.7
 570,master,30,裏表ラバーズ,30.7
 130,master,30,劣等上等,30.7
-819,expert,30,Don't Fight The Music,
-2234,expert,30,folern,
-2244,expert,30,MarbleBlue.,
-654,expert,30,初音ミクの激唱,
-244,expert,30,初音ミクの消失,
-1249,expert,30,腐れ外道とチョコレゐト,
+819,expert,30,Don't Fight The Music,30.5
+2234,expert,30,folern,30.2
+2244,expert,30,MarbleBlue.,30.4
+654,expert,30,初音ミクの激唱,30.8
+244,expert,30,初音ミクの消失,30.7
+1249,expert,30,腐れ外道とチョコレゐト,30.4
 590,master,29,＊ハロー、プラネット。,29.7
 1655,master,29,39,29.3
 1120,master,29,88☆彡,29.7
@@ -474,11 +474,11 @@ chart_id,difficulty,play_level,title,chart_constant
 3450,master,29,惑星ループ,29.0
 3675,master,29,傀儡のうつつ,29.5
 1730,master,29,嗚呼、素晴らしきニャン生,29.9
-3724,expert,29,ANiMA,
-2239,expert,29,Sage,
-1639,expert,29,星界ちゃんと可不ちゃんのおつかい合騒曲,
-2714,expert,29,生命性シンドロウム,
-674,expert,29,六兆年と一夜物語,
+3724,expert,29,ANiMA,29.5
+2239,expert,29,Sage,29.0
+1639,expert,29,星界ちゃんと可不ちゃんのおつかい合騒曲,29.9
+2714,expert,29,生命性シンドロウム,29.8
+674,expert,29,六兆年と一夜物語,29.7
 2150,master,28,『んっあっあっ。』,28.2
 2170,master,28,1000年生きてる,28.4
 1530,master,28,1925,28.6
@@ -620,7 +620,7 @@ chart_id,difficulty,play_level,title,chart_constant
 639,expert,28,Brand New Day,
 2919,expert,28,IMAWANOKIWA,
 3484,expert,28,Internet Junk Junkie,
-2759,expert,28,M@GICAL☆CURE! LOVE ♥ SHOT!,
+2759,expert,28,M@GICAL☆CURE! LOVE ♥ SHOT!,28.0
 3234,expert,28,SAN値直葬,
 1419,expert,28,インビジブル,
 1764,expert,28,キティ,

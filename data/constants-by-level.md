@@ -337,12 +337,12 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - MASTER 夜咄ディセイブ `30.7`  `405`
 - MASTER 裏表ラバーズ `30.7`  `570`
 - MASTER 劣等上等 `30.7`  `130`
-- EXPERT Don't Fight The Music `（未設定 → 仮 30.5）`  `819`
-- EXPERT folern `（未設定 → 仮 30.5）`  `2234`
-- EXPERT MarbleBlue. `（未設定 → 仮 30.5）`  `2244`
-- EXPERT 初音ミクの激唱 `（未設定 → 仮 30.5）`  `654`
-- EXPERT 初音ミクの消失 `（未設定 → 仮 30.5）`  `244`
-- EXPERT 腐れ外道とチョコレゐト `（未設定 → 仮 30.5）`  `1249`
+- EXPERT Don't Fight The Music `30.5`  `819`
+- EXPERT folern `30.2`  `2234`
+- EXPERT MarbleBlue. `30.4`  `2244`
+- EXPERT 初音ミクの激唱 `30.8`  `654`
+- EXPERT 初音ミクの消失 `30.7`  `244`
+- EXPERT 腐れ外道とチョコレゐト `30.4`  `1249`
 
 ### Lv.29
 
@@ -512,11 +512,11 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - MASTER 惑星ループ `29.0`  `3450`
 - MASTER 傀儡のうつつ `29.5`  `3675`
 - MASTER 嗚呼、素晴らしきニャン生 `29.9`  `1730`
-- EXPERT ANiMA `（未設定 → 仮 29.5）`  `3724`
-- EXPERT Sage `（未設定 → 仮 29.5）`  `2239`
-- EXPERT 星界ちゃんと可不ちゃんのおつかい合騒曲 `（未設定 → 仮 29.5）`  `1639`
-- EXPERT 生命性シンドロウム `（未設定 → 仮 29.5）`  `2714`
-- EXPERT 六兆年と一夜物語 `（未設定 → 仮 29.5）`  `674`
+- EXPERT ANiMA `29.5`  `3724`
+- EXPERT Sage `29.0`  `2239`
+- EXPERT 星界ちゃんと可不ちゃんのおつかい合騒曲 `29.9`  `1639`
+- EXPERT 生命性シンドロウム `29.8`  `2714`
+- EXPERT 六兆年と一夜物語 `29.7`  `674`
 
 ### Lv.28
 
@@ -661,7 +661,7 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - EXPERT Brand New Day `（未設定 → 仮 28.5）`  `639`
 - EXPERT IMAWANOKIWA `（未設定 → 仮 28.5）`  `2919`
 - EXPERT Internet Junk Junkie `（未設定 → 仮 28.5）`  `3484`
-- EXPERT M@GICAL☆CURE! LOVE ♥ SHOT! `（未設定 → 仮 28.5）`  `2759`
+- EXPERT M@GICAL☆CURE! LOVE ♥ SHOT! `28.0`  `2759`
 - EXPERT SAN値直葬 `（未設定 → 仮 28.5）`  `3234`
 - EXPERT インビジブル `（未設定 → 仮 28.5）`  `1419`
 - EXPERT キティ `（未設定 → 仮 28.5）`  `1764`
