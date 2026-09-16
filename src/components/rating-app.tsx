@@ -298,11 +298,6 @@ export function RatingApp() {
           <h1 className="text-2xl font-semibold tracking-tight">
             プロセカレーティング
           </h1>
-          <p className="max-w-xl text-sm text-muted-foreground">
-            判定の重み・単曲レート・譜面定数はリポジトリの共通設定です。定数が空の譜面は公式レベル.5
-            を仮置きします。
-            {settings.updatedAt ? ` 規則の更新日 ${settings.updatedAt}。` : ""}
-          </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <HelpDialog settings={settings} />
@@ -613,10 +608,6 @@ function PoolPanels({
           />
         ) : (
           <>
-            <p className="text-xs text-muted-foreground">
-              {filtered.length} 譜面中 {shown.length} 件を表示。GREAT 以下を入れると PERFECT
-              は総ノーツから自動で埋まります。AP は判定をすべて 0 にします。
-            </p>
             <div className="space-y-3 md:hidden">
               {shown.map((chart) => (
                 <ChartCard
