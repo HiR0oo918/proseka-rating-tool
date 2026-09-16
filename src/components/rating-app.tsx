@@ -522,10 +522,31 @@ function PoolPanels({
   onClear: (chart: Chart) => void;
 }) {
   const [view, setView] = useState<"charts" | "best">("charts");
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const bestTitle =
     pool === "append"
       ? `APPEND ベスト ${settings.appendBestCount}`
       : `MASTER以下 ベスト ${settings.otherBestCount}`;
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (
+      view !== "charts" ||
+      shown.length >= filtered.length ||
+      !target
+    ) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) onMore();
+      },
+      { rootMargin: "400px 0px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [filtered.length, onMore, shown.length, view]);
 
   return (
     <div className="space-y-4">
@@ -632,9 +653,11 @@ function PoolPanels({
               />
             </div>
             {shown.length < filtered.length ? (
-              <Button variant="outline" className="w-full" onClick={onMore}>
-                さらに表示（残り {filtered.length - shown.length}）
-              </Button>
+              <div ref={loadMoreRef}>
+                <Button variant="outline" className="w-full" onClick={onMore}>
+                  さらに表示（残り {filtered.length - shown.length}）
+                </Button>
+              </div>
             ) : null}
           </>
         )}
