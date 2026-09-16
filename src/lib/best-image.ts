@@ -8,6 +8,7 @@ export type BestImageRow = {
   constant: number;
   achievement: number;
   rating: number;
+  clearStatus: "AP" | "FC" | null;
   jacketAsset: string;
 };
 
@@ -190,6 +191,18 @@ export async function renderBestImage(opts: {
       ctx.textAlign = "left";
 
       if (row) {
+        if (row.clearStatus) {
+          roundRect(ctx, x + 8, y + cell - 34, 48, 26, 13);
+          ctx.fillStyle =
+            row.clearStatus === "AP" ? "#f6c453" : "#20bfc5";
+          ctx.fill();
+          ctx.fillStyle = row.clearStatus === "AP" ? "#251a00" : "#071f20";
+          ctx.font = "800 14px ui-monospace, monospace";
+          ctx.textAlign = "center";
+          ctx.fillText(row.clearStatus, x + 32, y + cell - 16);
+          ctx.textAlign = "left";
+        }
+
         roundRect(ctx, x + 96, y + cell - 34, 88, 26, 13);
         ctx.fillStyle = "rgba(18, 12, 24, 0.88)";
         ctx.fill();

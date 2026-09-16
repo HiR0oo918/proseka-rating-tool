@@ -487,6 +487,7 @@ function EmptyState({ title, body }: { title: string; body: string }) {
 
 type RankedRow = {
   chart: Chart;
+  judgement: Judgement;
   rating: number;
   achievement: number;
   constant: number;
@@ -932,6 +933,14 @@ function BestList({
           constant: row.constant,
           achievement: row.achievement,
           rating: row.rating,
+          clearStatus: isAllPerfect(
+            row.chart.totalNoteCount,
+            row.judgement,
+          )
+            ? "AP"
+            : isFullCombo(row.chart.totalNoteCount, row.judgement)
+              ? "FC"
+              : null,
           jacketAsset: row.chart.jacketAsset,
         }));
       const blob = await renderBestImage({
