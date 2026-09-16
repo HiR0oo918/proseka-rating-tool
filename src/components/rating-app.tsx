@@ -54,6 +54,7 @@ import { loadResults, makeBackup, parseBackup, saveResults } from "@/lib/storage
 
 type Pool = "master-below" | "append";
 type DiffFilter = "all" | "hard" | "expert" | "master";
+type View = "charts" | "best";
 type SortKey =
   | "title"
   | "constant-desc"
@@ -138,6 +139,7 @@ export function RatingApp() {
   const [ready, setReady] = useState(false);
   const [results, setResults] = useState<Record<string, Judgement>>({});
   const [pool, setPool] = useState<Pool>("master-below");
+  const [view, setView] = useState<View>("charts");
   const [query, setQuery] = useState("");
   const [diffFilter, setDiffFilter] = useState<DiffFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("constant-desc");
@@ -342,6 +344,21 @@ export function RatingApp() {
         />
       </div>
 
+      <div className="flex gap-2">
+        <Button
+          variant={view === "charts" ? "default" : "outline"}
+          onClick={() => setView("charts")}
+        >
+          譜面入力
+        </Button>
+        <Button
+          variant={view === "best" ? "default" : "outline"}
+          onClick={() => setView("best")}
+        >
+          ベスト内訳
+        </Button>
+      </div>
+
       <Tabs
         value={pool}
         onValueChange={(value) => {
@@ -358,6 +375,7 @@ export function RatingApp() {
         <TabsContent value="master-below" className="mt-4">
           <PoolPanels
             pool="master-below"
+            view={view}
             query={query}
             onQuery={(q) => {
               setQuery(q);
@@ -389,6 +407,7 @@ export function RatingApp() {
         <TabsContent value="append" className="mt-4">
           <PoolPanels
             pool="append"
+            view={view}
             query={query}
             onQuery={(q) => {
               setQuery(q);
@@ -470,6 +489,7 @@ type RankedRow = {
 
 function PoolPanels({
   pool,
+  view,
   query,
   onQuery,
   diffFilter,
@@ -489,6 +509,7 @@ function PoolPanels({
   onClear,
 }: {
   pool: Pool;
+  view: View;
   query: string;
   onQuery: (query: string) => void;
   diffFilter: DiffFilter;
@@ -507,7 +528,6 @@ function PoolPanels({
   onAp: (chart: Chart) => void;
   onClear: (chart: Chart) => void;
 }) {
-  const [view, setView] = useState<"charts" | "best">("charts");
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const bestTitle =
     pool === "append"
@@ -536,20 +556,6 @@ function PoolPanels({
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2">
-        <Button
-          variant={view === "charts" ? "default" : "outline"}
-          onClick={() => setView("charts")}
-        >
-          譜面入力
-        </Button>
-        <Button
-          variant={view === "best" ? "default" : "outline"}
-          onClick={() => setView("best")}
-        >
-          ベスト内訳
-        </Button>
-      </div>
       {view === "charts" ? (
         <div className="space-y-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end">
