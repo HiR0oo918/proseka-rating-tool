@@ -1040,11 +1040,124 @@ function BestList({
   );
 }
 
+function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
+  const width = 720;
+  const top = 42;
+  const offsetBottom = 176;
+  const axisY = 214;
+  const left = 44;
+  const right = 682;
+  const offsets = points
+    .filter((point) => point.mode === "offset")
+    .map((point) => point.value);
+  const minOffset = Math.min(...offsets);
+  const maxOffset = Math.max(...offsets);
+  const offsetRange = Math.max(1, maxOffset - minOffset);
+  const plotted = points.map((point, index) => {
+    const x =
+      points.length === 1
+        ? width / 2
+        : left + (index * (right - left)) / (points.length - 1);
+    const y =
+      point.mode === "absolute"
+        ? axisY
+        : top +
+          ((maxOffset - point.value) / offsetRange) * (offsetBottom - top);
+    return { point, x, y };
+  });
+
+  return (
+    <figure className="space-y-2">
+      <div className="overflow-x-auto rounded-lg border bg-muted/20 p-2">
+        <svg
+          viewBox={`0 0 ${width} 258`}
+          className="min-w-[620px]"
+          role="img"
+          aria-label="達成率と単曲レートの境界グラフ"
+        >
+          {plotted.map(({ point, x }) => (
+            <line
+              key={`grid-${point.percent}`}
+              x1={x}
+              y1={28}
+              x2={x}
+              y2={axisY}
+              className="stroke-border"
+              strokeDasharray="3 5"
+            />
+          ))}
+          <line
+            x1={left}
+            y1={axisY}
+            x2={right}
+            y2={axisY}
+            className="stroke-muted-foreground"
+          />
+          <polyline
+            points={plotted.map(({ x, y }) => `${x},${y}`).join(" ")}
+            fill="none"
+            className="stroke-primary"
+            strokeWidth="4"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {plotted.map(({ point, x, y }, index) => {
+            const textAnchor =
+              index === 0
+                ? "start"
+                : index === plotted.length - 1
+                  ? "end"
+                  : "middle";
+            return (
+              <g key={point.percent}>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="6"
+                  className="fill-background stroke-primary"
+                  strokeWidth="4"
+                />
+                <text
+                  x={x}
+                  y={y - 14}
+                  textAnchor={textAnchor}
+                  className="fill-foreground text-[13px] font-semibold"
+                >
+                  {describeRatingPoint(point)}
+                </text>
+                <text
+                  x={x}
+                  y={axisY + 24}
+                  textAnchor={textAnchor}
+                  className="fill-muted-foreground text-[12px]"
+                >
+                  {point.percent}%
+                </text>
+              </g>
+            );
+          })}
+          <text
+            x={right}
+            y={axisY + 42}
+            textAnchor="end"
+            className="fill-muted-foreground text-[12px]"
+          >
+            達成率
+          </text>
+        </svg>
+      </div>
+      <figcaption className="text-xs text-muted-foreground">
+        各境界を等間隔で表示し、境界間は線形補間します。
+      </figcaption>
+    </figure>
+  );
+}
+
 function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="outline" />}>仕様</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>仕様</DialogTitle>
         </DialogHeader>
@@ -1069,13 +1182,7 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
             <br />
             APPEND レート = 上位 {settings.appendBestCount} 譜面の平均
           </p>
-          <ul className="font-mono text-xs">
-            {settings.ratingPoints.map((point) => (
-              <li key={point.percent}>
-                {point.percent}% → {describeRatingPoint(point)}
-              </li>
-            ))}
-          </ul>
+          <RatingCurveGraph points={settings.ratingPoints} />
         </div>
         <div className="space-y-3 border-t pt-4">
           <h3 className="font-medium">共通設定</h3>
