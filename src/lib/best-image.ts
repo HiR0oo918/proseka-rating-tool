@@ -193,10 +193,27 @@ export async function renderBestImage(opts: {
       if (row) {
         if (row.clearStatus) {
           roundRect(ctx, x + 8, y + cell - 34, 48, 26, 13);
-          ctx.fillStyle =
-            row.clearStatus === "AP" ? "#f6c453" : "#20bfc5";
+          const statusGradient = ctx.createLinearGradient(
+            0,
+            y + cell - 34,
+            0,
+            y + cell - 8,
+          );
+          if (row.clearStatus === "AP") {
+            statusGradient.addColorStop(0, "#f8a0fa");
+            statusGradient.addColorStop(0.5, "#b1b6f7");
+            statusGradient.addColorStop(1, "#7af4d2");
+          } else {
+            statusGradient.addColorStop(0, "#fdc8eb");
+            statusGradient.addColorStop(0.5, "#fca4de");
+            statusGradient.addColorStop(1, "#fc8cd4");
+          }
+          ctx.fillStyle = statusGradient;
           ctx.fill();
-          ctx.fillStyle = row.clearStatus === "AP" ? "#251a00" : "#071f20";
+          ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.fillStyle = "#2b1530";
           ctx.font = "800 14px ui-monospace, monospace";
           ctx.textAlign = "center";
           ctx.fillText(row.clearStatus, x + 32, y + cell - 16);
