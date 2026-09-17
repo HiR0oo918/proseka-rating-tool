@@ -3,6 +3,8 @@ import {
   DEFAULT_APPEND_BEST,
   DEFAULT_JUDGEMENT_WEIGHTS,
   DEFAULT_OTHER_BEST,
+  DEFAULT_OVERALL_APPEND_WEIGHT,
+  DEFAULT_OVERALL_OTHER_WEIGHT,
   DEFAULT_RATING_POINTS,
   normalizeJudgementWeights,
   normalizeRatingPoints,
@@ -14,6 +16,8 @@ export type RatingConfig = {
   updatedAt: string;
   otherBestCount: number;
   appendBestCount: number;
+  overallOtherWeight: number;
+  overallAppendWeight: number;
   ratingPoints: RatingPoint[];
   judgementWeights: JudgementWeights;
 };
@@ -33,6 +37,18 @@ function normalizeConfig(rawConfig: Partial<RatingConfig>): RatingConfig {
       1,
       Math.floor(rawConfig.appendBestCount ?? DEFAULT_APPEND_BEST) ||
         DEFAULT_APPEND_BEST,
+    ),
+    overallOtherWeight: Math.max(
+      0,
+      Math.floor(
+        rawConfig.overallOtherWeight ?? DEFAULT_OVERALL_OTHER_WEIGHT,
+      ) || DEFAULT_OVERALL_OTHER_WEIGHT,
+    ),
+    overallAppendWeight: Math.max(
+      0,
+      Math.floor(
+        rawConfig.overallAppendWeight ?? DEFAULT_OVERALL_APPEND_WEIGHT,
+      ) || DEFAULT_OVERALL_APPEND_WEIGHT,
     ),
     ratingPoints: points,
     judgementWeights: normalizeJudgementWeights(rawConfig.judgementWeights),
