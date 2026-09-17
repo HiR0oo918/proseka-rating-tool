@@ -1093,30 +1093,6 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
               <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
             </div>
           </div>
-          <div className="space-y-2">
-            <Label>判定の重み</Label>
-            <p className="text-xs text-muted-foreground">
-              達成率の分子に使います。分母は PERFECT の重み × 総ノーツです。
-            </p>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-              {(
-                [
-                  ["perfect", "PERFECT"],
-                  ["great", "GREAT"],
-                  ["good", "GOOD"],
-                  ["bad", "BAD"],
-                  ["miss", "MISS"],
-                ] as const
-              ).map(([key, label]) => (
-                <div key={key} className="space-y-1">
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                  <p className="tabular-nums text-sm">
-                    {settings.judgementWeights[key]}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
