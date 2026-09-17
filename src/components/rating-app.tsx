@@ -1041,56 +1041,91 @@ function BestList({
 }
 
 function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
-  const width = 720;
-  const top = 42;
-  const offsetBottom = 176;
-  const axisY = 214;
-  const left = 44;
-  const right = 682;
+  const width = 760;
+  const height = 320;
+  const top = 36;
+  const bottom = 268;
+  const left = 92;
+  const right = 728;
   const offsets = points
     .filter((point) => point.mode === "offset")
     .map((point) => point.value);
-  const minOffset = Math.min(...offsets);
-  const maxOffset = Math.max(...offsets);
-  const offsetRange = Math.max(1, maxOffset - minOffset);
-  const plotted = points.map((point, index) => {
-    const x =
-      points.length === 1
-        ? width / 2
-        : left + (index * (right - left)) / (points.length - 1);
-    const y =
-      point.mode === "absolute"
-        ? axisY
-        : top +
-          ((maxOffset - point.value) / offsetRange) * (offsetBottom - top);
-    return { point, x, y };
-  });
+  const minOffset = Math.min(0, ...offsets);
+  const maxOffset = Math.max(0, ...offsets);
+  const absoluteFloor = minOffset - 1.6;
+  const valueMin = absoluteFloor - 0.35;
+  const valueMax = maxOffset + 0.45;
+  const xOf = (percent: number) => {
+    const span = right - left;
+    const breakX = left + span * 0.16;
+    if (percent <= 0) return left;
+    if (percent <= 95) return left + (percent / 95) * (breakX - left);
+    return breakX + ((percent - 95) / 5) * (right - breakX);
+  };
+  const yValue = (point: RatingPoint) =>
+    point.mode === "absolute" ? absoluteFloor : point.value;
+  const yOf = (value: number) =>
+    top + ((valueMax - value) / (valueMax - valueMin)) * (bottom - top);
+  const plotted = points.map((point) => ({
+    point,
+    x: xOf(point.percent),
+    y: yOf(yValue(point)),
+    label: describeRatingPoint(point),
+  }));
+  const yTicks = [
+    ...[...new Set(offsets)].sort((a, b) => b - a).map((value) => ({
+      value,
+      label: `定数${value > 0 ? "+" : ""}${value}`,
+    })),
+    ...points
+      .filter((point) => point.mode === "absolute")
+      .map((point) => ({
+        value: absoluteFloor,
+        label: String(point.value),
+      })),
+  ];
 
   return (
     <figure className="space-y-2">
       <div className="overflow-x-auto rounded-lg border bg-muted/20 p-2">
         <svg
-          viewBox={`0 0 ${width} 258`}
-          className="min-w-[620px]"
+          viewBox={`0 0 ${width} ${height}`}
+          className="min-w-[640px]"
           role="img"
           aria-label="達成率と単曲レートの境界グラフ"
         >
-          {plotted.map(({ point, x }) => (
-            <line
-              key={`grid-${point.percent}`}
-              x1={x}
-              y1={28}
-              x2={x}
-              y2={axisY}
-              className="stroke-border"
-              strokeDasharray="3 5"
-            />
+          {yTicks.map((tick) => (
+            <g key={`y-${tick.label}`}>
+              <line
+                x1={left}
+                y1={yOf(tick.value)}
+                x2={right}
+                y2={yOf(tick.value)}
+                className="stroke-border"
+                strokeDasharray="3 5"
+              />
+              <text
+                x={left - 10}
+                y={yOf(tick.value) + 4}
+                textAnchor="end"
+                className="fill-muted-foreground text-[11px]"
+              >
+                {tick.label}
+              </text>
+            </g>
           ))}
           <line
             x1={left}
-            y1={axisY}
+            y1={top}
+            x2={left}
+            y2={bottom}
+            className="stroke-muted-foreground"
+          />
+          <line
+            x1={left}
+            y1={bottom}
             x2={right}
-            y2={axisY}
+            y2={bottom}
             className="stroke-muted-foreground"
           />
           <polyline
@@ -1101,7 +1136,7 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
             strokeLinejoin="round"
             strokeLinecap="round"
           />
-          {plotted.map(({ point, x, y }, index) => {
+          {plotted.map(({ point, x, y, label }, index) => {
             const textAnchor =
               index === 0
                 ? "start"
@@ -1110,6 +1145,14 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
                   : "middle";
             return (
               <g key={point.percent}>
+                <line
+                  x1={x}
+                  y1={y}
+                  x2={x}
+                  y2={bottom}
+                  className="stroke-border"
+                  strokeDasharray="2 4"
+                />
                 <circle
                   cx={x}
                   cy={y}
@@ -1119,15 +1162,15 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
                 />
                 <text
                   x={x}
-                  y={y - 14}
+                  y={y - 12 - (index % 2) * 14}
                   textAnchor={textAnchor}
-                  className="fill-foreground text-[13px] font-semibold"
+                  className="fill-foreground text-[12px] font-semibold"
                 >
-                  {describeRatingPoint(point)}
+                  {label}
                 </text>
                 <text
                   x={x}
-                  y={axisY + 24}
+                  y={bottom + 22}
                   textAnchor={textAnchor}
                   className="fill-muted-foreground text-[12px]"
                 >
@@ -1137,8 +1180,15 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
             );
           })}
           <text
+            x={left}
+            y={18}
+            className="fill-muted-foreground text-[12px]"
+          >
+            単曲レート
+          </text>
+          <text
             x={right}
-            y={axisY + 42}
+            y={bottom + 42}
             textAnchor="end"
             className="fill-muted-foreground text-[12px]"
           >
@@ -1146,9 +1196,6 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
           </text>
         </svg>
       </div>
-      <figcaption className="text-xs text-muted-foreground">
-        各境界を等間隔で表示し、境界間は線形補間します。
-      </figcaption>
     </figure>
   );
 }
