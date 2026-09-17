@@ -1076,10 +1076,6 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
               </li>
             ))}
           </ul>
-          <p className="text-muted-foreground">
-            譜面定数は data/charts.csv の chart_constant です。空欄のときは公式レベル.5
-            を仮置きします。ベスト枠が埋まっていないときは、足りない枠を 0 として割ります。
-          </p>
         </div>
         <div className="space-y-3 border-t pt-4">
           <h3 className="font-medium">共通設定</h3>
