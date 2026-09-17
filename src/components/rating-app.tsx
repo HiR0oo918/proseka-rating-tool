@@ -14,7 +14,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -1048,10 +1047,6 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>仕様</DialogTitle>
-          <DialogDescription>
-            非公式です。設定は全員共通です。
-            {settings.updatedAt ? ` 更新日 ${settings.updatedAt}。` : ""}
-          </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 text-sm">
           <h3 className="font-medium">計算式</h3>
