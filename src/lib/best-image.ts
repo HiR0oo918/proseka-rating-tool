@@ -58,13 +58,17 @@ export type BestImageSection = {
 
 export async function renderBestImage(opts: {
   sections: BestImageSection[];
+  overall?: {
+    average: number;
+    mixLabel: string;
+  };
 }): Promise<Blob> {
   const cell = 192;
   const footer = 72;
   const cardHeight = cell + footer;
   const gap = 16;
   const pad = 40;
-  const titleHeader = 72;
+  const titleHeader = opts.overall ? 96 : 72;
   const sectionHeader = 100;
   const sectionGap = 40;
   const layouts = opts.sections.map((section) => {
@@ -100,6 +104,24 @@ export async function renderBestImage(opts: {
   ctx.fillStyle = "#ffffff";
   ctx.font = "700 32px 'Noto Sans JP', sans-serif";
   ctx.fillText("プロセカレーティング", pad, pad + 32);
+
+  if (opts.overall) {
+    ctx.font = "600 16px 'Noto Sans JP', sans-serif";
+    ctx.fillStyle = "#d3c4df";
+    ctx.fillText("総合", pad, pad + 70);
+    ctx.font = "700 36px ui-monospace, monospace";
+    ctx.fillStyle = "#ffffff";
+    const overallText = formatRating(opts.overall.average);
+    ctx.fillText(overallText, pad + 52, pad + 74);
+    const overallWidth = ctx.measureText(overallText).width;
+    ctx.font = "600 16px 'Noto Sans JP', sans-serif";
+    ctx.fillStyle = "#d3c4df";
+    ctx.fillText(
+      opts.overall.mixLabel,
+      pad + 52 + overallWidth + 16,
+      pad + 70,
+    );
+  }
 
   const jackets = await Promise.all(
     opts.sections.map((section) =>

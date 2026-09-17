@@ -1,4 +1,4 @@
-"use client";
+use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -40,7 +40,9 @@ import {
   formatPercent,
   formatRating,
   isAllPerfect,
+  isAppendPool,
   isFullCombo,
+  overallRating,
   scoreJudgement,
   singleRating,
   type Chart,
@@ -185,8 +187,8 @@ export function RatingApp() {
     });
   }, [results, settings.ratingPoints, settings.judgementWeights]);
 
-  const otherPlayed = played.filter((p) => p.chart.difficulty !== "append");
-  const appendPlayed = played.filter((p) => p.chart.difficulty === "append");
+  const otherPlayed = played.filter((p) => !isAppendPool(p.chart));
+  const appendPlayed = played.filter((p) => isAppendPool(p.chart));
   const otherBest = bestAverage(
     otherPlayed.map((p) => p.rating),
     settings.otherBestCount,
@@ -194,6 +196,12 @@ export function RatingApp() {
   const appendBest = bestAverage(
     appendPlayed.map((p) => p.rating),
     settings.appendBestCount,
+  );
+  const overall = overallRating(
+    otherBest.average,
+    appendBest.average,
+    settings.overallOtherWeight,
+    settings.overallAppendWeight,
   );
 
   const otherRanked = [...otherPlayed]
@@ -205,7 +213,7 @@ export function RatingApp() {
 
   const filtered = useMemo(() => {
     const list = charts.filter((chart) => {
-      const isAppend = chart.difficulty === "append";
+      const isAppend = isAppendPool(chart);
       if (pool === "append" ? !isAppend : isAppend) return false;
       if (pool === "master-below" && diffFilter !== "all") {
         if (chart.difficulty !== diffFilter) return false;
@@ -327,21 +335,31 @@ export function RatingApp() {
         <p className="text-sm text-destructive">{importError}</p>
       ) : null}
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3">
         <RatingSummary
-          title="MASTER以下"
-          description={`HARD・EXPERT・MASTER の上位 ${settings.otherBestCount} 譜面`}
-          average={otherBest.average}
-          used={otherBest.used}
-          cap={otherBest.cap}
+          title="総合"
+          description={"MASTER以下 " + String(settings.overallOtherWeight) + " : APPEND " + String(settings.overallAppendWeight)}
+          average={overall}
+          used={null}
+          cap={null}
+          large
         />
-        <RatingSummary
-          title="APPEND"
-          description={`APPEND 譜面の上位 ${settings.appendBestCount} 譜面`}
-          average={appendBest.average}
-          used={appendBest.used}
-          cap={appendBest.cap}
-        />
+        <div className="grid gap-3 sm:grid-cols-2">
+          <RatingSummary
+            title="MASTER以下"
+            description={"HARD・EXPERT・MASTER（Lv.36以下）の上位 " + String(settings.otherBestCount) + " 譜面"}
+            average={otherBest.average}
+            used={otherBest.used}
+            cap={otherBest.cap}
+          />
+          <RatingSummary
+            title="APPEND"
+            description={"APPEND と MASTER 37 の上位 " + String(settings.appendBestCount) + " 譜面"}
+            average={appendBest.average}
+            used={appendBest.used}
+            cap={appendBest.cap}
+          />
+        </div>
       </div>
 
       <div className="flex gap-2">
@@ -451,22 +469,32 @@ function RatingSummary({
   average,
   used,
   cap,
+  large = false,
 }: {
   title: string;
   description: string;
   average: number;
-  used: number;
-  cap: number;
+  used: number | null;
+  cap: number | null;
+  large?: boolean;
 }) {
   return (
     <Card>
       <CardHeader>
         <CardDescription>{title}</CardDescription>
-        <CardTitle className="font-mono text-3xl tabular-nums">
+        <CardTitle
+          className={
+            large
+              ? "font-mono text-4xl tabular-nums sm:text-5xl"
+              : "font-mono text-3xl tabular-nums"
+          }
+        >
           {formatRating(average)}
         </CardTitle>
         <CardDescription>
-          {description}（{used}/{cap} 譜面）
+          {used != null && cap != null
+            ? description + "（" + String(used) + "/" + String(cap) + " 譜面）"
+            : description}
         </CardDescription>
       </CardHeader>
     </Card>
@@ -942,21 +970,36 @@ function BestList({
               : null,
           jacketAsset: row.chart.jacketAsset,
         }));
+      const otherAverage =
+        otherRows.reduce((sum, row) => sum + row.rating, 0) /
+        settings.otherBestCount;
+      const appendAverage =
+        appendRows.reduce((sum, row) => sum + row.rating, 0) /
+        settings.appendBestCount;
       const blob = await renderBestImage({
+        overall: {
+          average: overallRating(
+            otherAverage,
+            appendAverage,
+            settings.overallOtherWeight,
+            settings.overallAppendWeight,
+          ),
+          mixLabel:
+            "MASTER以下 " +
+            String(settings.overallOtherWeight) +
+            " : APPEND " +
+            String(settings.overallAppendWeight),
+        },
         sections: [
           {
             poolLabel: "MASTER以下",
-            average:
-              otherRows.reduce((sum, row) => sum + row.rating, 0) /
-              settings.otherBestCount,
+            average: otherAverage,
             cap: settings.otherBestCount,
             rows: imageRows(otherRows),
           },
           {
             poolLabel: "APPEND",
-            average:
-              appendRows.reduce((sum, row) => sum + row.rating, 0) /
-              settings.appendBestCount,
+            average: appendAverage,
             cap: settings.appendBestCount,
             rows: imageRows(appendRows),
           },
@@ -1218,9 +1261,15 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
             <br />
             単曲レート = 下記境界を線形補間
             <br />
-            MASTER以下レート = 上位 {settings.otherBestCount} 譜面の平均
+            MASTER以下レート = HARD・EXPERT・MASTER（Lv.36以下）の上位{" "}
+            {settings.otherBestCount} 譜面の平均
             <br />
-            APPEND レート = 上位 {settings.appendBestCount} 譜面の平均
+            APPEND レート = APPEND と MASTER 37 の上位{" "}
+            {settings.appendBestCount} 譜面の平均
+            <br />
+            総合レート = (MASTER以下×{settings.overallOtherWeight} + APPEND×
+            {settings.overallAppendWeight}) ÷{" "}
+            {settings.overallOtherWeight + settings.overallAppendWeight}
           </p>
           <RatingCurveGraph points={settings.ratingPoints} />
         </div>
@@ -1234,6 +1283,13 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
             <div className="space-y-1">
               <Label>APPEND の譜面数</Label>
               <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
+            </div>
+            <div className="space-y-1 sm:col-span-2">
+              <Label>総合の混ぜ方</Label>
+              <p className="tabular-nums text-sm">
+                MASTER以下 {settings.overallOtherWeight} : APPEND{" "}
+                {settings.overallAppendWeight}
+              </p>
             </div>
           </div>
         </div>
