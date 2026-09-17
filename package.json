@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 43157 --hostname 0.0.0.0",
-    "build": "opennextjs-cloudflare build",
+    "build": "node scripts/sync-worker-name.mjs && opennextjs-cloudflare build",
     "build:next": "next build",
     "start": "next start --port 43157 --hostname 0.0.0.0",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "node scripts/cf-deploy.mjs",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "lint": "eslint",
     "constants:list": "node scripts/sync-constants.mjs list",
@@ -36,5 +36,10 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.131.2"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "unrs-resolver": true,
+    "workerd": true
   }
 }

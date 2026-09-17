@@ -40,12 +40,12 @@ npm run dev
 
 ## Cloudflare Workers
 
-OpenNext（`@opennextjs/cloudflare`）でデプロイします。Worker 名は `prod` です（`wrangler.jsonc` の `name` と自己参照バインディングを一致させてください）。
+OpenNext（`@opennextjs/cloudflare`）でデプロイします。Worker 名は `prod` です。`wrangler.jsonc` の `name` と `WORKER_SELF_REFERENCE.service` は同じ値にしてください。
 
-Git 連携する場合の例:
+Git 連携する場合、Cloudflare ダッシュボードの **Worker 名も `prod`** に揃えます。違うと「name must match」や service binding 10143 で失敗します。ビルド設定は次です。
 
-- ビルドコマンド: `npm run build`（OpenNext の Worker 成果物まで作る）
-- デプロイコマンド: `npx wrangler deploy`
+- ビルドコマンド: `npm run build`（`next build` 単体にしない。OpenNext の Worker 成果物まで作る）
+- デプロイコマンド: `npm run deploy`（成果物が無いときはここで build する）
 
 手元から出す場合:
 
