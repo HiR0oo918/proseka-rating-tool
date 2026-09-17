@@ -13,7 +13,7 @@ const notoSans = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "プロセカレーティング",
   description:
-    "達成率と譜面定数から非公式レーティングを出します。MASTER以下と APPEND を 3:2 で混ぜた総合も出します。",
+    "達成率と譜面定数から非公式レーティングを出します。MASTER以下と APPEND から総合も出します。",
 };
 
 export default function RootLayout({

@@ -60,7 +60,6 @@ export async function renderBestImage(opts: {
   sections: BestImageSection[];
   overall?: {
     average: number;
-    mixLabel: string;
   };
 }): Promise<Blob> {
   const cell = 192;
@@ -113,14 +112,6 @@ export async function renderBestImage(opts: {
     ctx.fillStyle = "#ffffff";
     const overallText = formatRating(opts.overall.average);
     ctx.fillText(overallText, pad + 52, pad + 74);
-    const overallWidth = ctx.measureText(overallText).width;
-    ctx.font = "600 16px 'Noto Sans JP', sans-serif";
-    ctx.fillStyle = "#d3c4df";
-    ctx.fillText(
-      opts.overall.mixLabel,
-      pad + 52 + overallWidth + 16,
-      pad + 70,
-    );
   }
 
   const jackets = await Promise.all(
