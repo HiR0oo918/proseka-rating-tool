@@ -1041,12 +1041,12 @@ function BestList({
 }
 
 function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
-  const width = 760;
+  const width = 500;
   const height = 300;
   const top = 36;
   const bottom = 248;
-  const left = 92;
-  const right = 728;
+  const left = 84;
+  const right = 468;
   const visible = points.filter((point) => point.percent >= 95);
   const minPercent = Math.min(...visible.map((point) => point.percent));
   const maxPercent = Math.max(...visible.map((point) => point.percent));
@@ -1083,7 +1083,7 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
       <div className="overflow-x-auto rounded-lg border bg-muted/20 p-2">
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="min-w-[640px]"
+          className="mx-auto w-full max-w-[420px]"
           role="img"
           aria-label="達成率と単曲レートの境界グラフ"
         >
@@ -1197,7 +1197,7 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
   return (
     <Dialog>
       <DialogTrigger render={<Button variant="outline" />}>仕様</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>仕様</DialogTitle>
         </DialogHeader>
