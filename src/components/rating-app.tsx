@@ -1,4 +1,4 @@
-"use client";
+use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -338,7 +338,6 @@ export function RatingApp() {
       <div className="grid gap-3">
         <RatingSummary
           title="総合"
-          description={"MASTER以下 " + String(settings.overallOtherWeight) + " : APPEND " + String(settings.overallAppendWeight)}
           average={overall}
           used={null}
           cap={null}
@@ -472,12 +471,20 @@ function RatingSummary({
   large = false,
 }: {
   title: string;
-  description: string;
+  description?: string;
   average: number;
   used: number | null;
   cap: number | null;
   large?: boolean;
 }) {
+  const detail =
+    used != null && cap != null
+      ? (description ? description + "（" : "（") +
+        String(used) +
+        "/" +
+        String(cap) +
+        " 譜面）"
+      : description;
   return (
     <Card>
       <CardHeader>
@@ -491,11 +498,7 @@ function RatingSummary({
         >
           {formatRating(average)}
         </CardTitle>
-        <CardDescription>
-          {used != null && cap != null
-            ? description + "（" + String(used) + "/" + String(cap) + " 譜面）"
-            : description}
-        </CardDescription>
+        {detail ? <CardDescription>{detail}</CardDescription> : null}
       </CardHeader>
     </Card>
   );
@@ -984,11 +987,6 @@ function BestList({
             settings.overallOtherWeight,
             settings.overallAppendWeight,
           ),
-          mixLabel:
-            "MASTER以下 " +
-            String(settings.overallOtherWeight) +
-            " : APPEND " +
-            String(settings.overallAppendWeight),
         },
         sections: [
           {
@@ -1283,13 +1281,6 @@ function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
             <div className="space-y-1">
               <Label>APPEND の譜面数</Label>
               <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
-            </div>
-            <div className="space-y-1 sm:col-span-2">
-              <Label>総合の混ぜ方</Label>
-              <p className="tabular-nums text-sm">
-                MASTER以下 {settings.overallOtherWeight} : APPEND{" "}
-                {settings.overallAppendWeight}
-              </p>
             </div>
           </div>
         </div>
