@@ -9,8 +9,10 @@
 | キー | 内容 |
 | --- | --- |
 | `updatedAt` | 最終更新日（表示用） |
-| `otherBestCount` | MASTER以下のベスト枠数 |
-| `appendBestCount` | APPEND のベスト枠数 |
+| `otherBestCount` | MASTER以下（HARD・EXPERT・MASTER Lv.36以下）のベスト枠数 |
+| `appendBestCount` | APPEND 枠（APPEND と MASTER 37）のベスト枠数 |
+| `overallOtherWeight` | 総合レートに混ぜる MASTER以下の重み（既定 3） |
+| `overallAppendWeight` | 総合レートに混ぜる APPEND の重み（既定 2） |
 | `judgementWeights` | 達成率の判定重み（perfect / great / good / bad / miss） |
 | `ratingPoints` | 単曲レートの折れ線。`mode` は `offset`（定数+value）か `absolute`（固定値） |
 
@@ -19,8 +21,8 @@
 入力用リスト（レベル高い順）:
 
 - [`data/constants-by-level.md`](constants-by-level.md) … 一覧
-- [`data/constants-master-below.csv`](constants-master-below.csv) … MASTER以下の入力用
-- [`data/constants-append.csv`](constants-append.csv) … APPEND の入力用
+- [`data/constants-master-below.csv`](constants-master-below.csv) … MASTER以下（MASTER 36以下）の入力用
+- [`data/constants-append.csv`](constants-append.csv) … APPEND 枠（MASTER 37 を含む）の入力用
 
 `chart_constant` に公式レベル.小数1桁を入れてください（例: 32.7）。空欄のときは公式レベル.5を仮置きします。整数部分は公式 `play_level` に揃えます。
 
