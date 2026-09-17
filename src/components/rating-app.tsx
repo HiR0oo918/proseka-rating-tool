@@ -1042,48 +1042,41 @@ function BestList({
 
 function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
   const width = 760;
-  const height = 320;
+  const height = 300;
   const top = 36;
-  const bottom = 268;
+  const bottom = 248;
   const left = 92;
   const right = 728;
-  const offsets = points
-    .filter((point) => point.mode === "offset")
-    .map((point) => point.value);
-  const minOffset = Math.min(0, ...offsets);
-  const maxOffset = Math.max(0, ...offsets);
-  const absoluteFloor = minOffset - 1.6;
-  const valueMin = absoluteFloor - 0.35;
+  const visible = points.filter((point) => point.percent >= 95);
+  const minPercent = Math.min(...visible.map((point) => point.percent));
+  const maxPercent = Math.max(...visible.map((point) => point.percent));
+  const offsets = visible.map((point) =>
+    point.mode === "offset" ? point.value : point.value,
+  );
+  const minOffset = Math.min(...offsets);
+  const maxOffset = Math.max(...offsets);
+  const valueMin = minOffset - 0.4;
   const valueMax = maxOffset + 0.45;
-  const xOf = (percent: number) => {
-    const span = right - left;
-    const breakX = left + span * 0.16;
-    if (percent <= 0) return left;
-    if (percent <= 95) return left + (percent / 95) * (breakX - left);
-    return breakX + ((percent - 95) / 5) * (right - breakX);
-  };
+  const xOf = (percent: number) =>
+    left +
+    ((percent - minPercent) / Math.max(0.1, maxPercent - minPercent)) *
+      (right - left);
   const yValue = (point: RatingPoint) =>
-    point.mode === "absolute" ? absoluteFloor : point.value;
+    point.mode === "offset" ? point.value : point.value;
   const yOf = (value: number) =>
     top + ((valueMax - value) / (valueMax - valueMin)) * (bottom - top);
-  const plotted = points.map((point) => ({
+  const plotted = visible.map((point) => ({
     point,
     x: xOf(point.percent),
     y: yOf(yValue(point)),
     label: describeRatingPoint(point),
   }));
-  const yTicks = [
-    ...[...new Set(offsets)].sort((a, b) => b - a).map((value) => ({
+  const yTicks = [...new Set(offsets)]
+    .sort((a, b) => b - a)
+    .map((value) => ({
       value,
       label: `定数${value > 0 ? "+" : ""}${value}`,
-    })),
-    ...points
-      .filter((point) => point.mode === "absolute")
-      .map((point) => ({
-        value: absoluteFloor,
-        label: String(point.value),
-      })),
-  ];
+    }));
 
   return (
     <figure className="space-y-2">
