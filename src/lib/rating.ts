@@ -19,8 +19,12 @@ export type Chart = {
   jacketAsset: string;
 };
 
-/** MASTER 37 はゲーム上 MASTER だが、レートは APPEND 枠に入れる。 */
+/** MASTER 37 は難易度表記は MASTER のまま、対象枠は APPEND枠。 */
 export const APPEND_POOL_MASTER_LEVEL = 37;
+
+export const OVERALL_LABEL = "総合レート";
+export const OTHER_POOL_LABEL = "通常枠";
+export const APPEND_POOL_LABEL = "APPEND枠";
 
 export function isAppendPool(
   chart: Pick<Chart, "difficulty" | "playLevel">,
@@ -248,7 +252,7 @@ export function singleRating(
 export function describeRatingPoint(point: RatingPoint): string {
   if (point.mode === "absolute") return String(point.value);
   const sign = point.value > 0 ? "+" : "";
-  return "定数" + sign + String(point.value);
+  return `定数${sign}${point.value}`;
 }
 
 export function bestAverage(values: number[], bestCount: number) {
@@ -276,5 +280,5 @@ export function formatRating(value: number): string {
 }
 
 export function formatPercent(achievement: number): string {
-  return (achievement * 100).toFixed(2) + "%";
+  return `${(achievement * 100).toFixed(2)}%`;
 }

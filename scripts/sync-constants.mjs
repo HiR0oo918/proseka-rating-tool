@@ -24,6 +24,14 @@ const DIFF_LABEL = {
   append: "APPEND",
 };
 const DIFF_ORDER = { master: 0, expert: 1, hard: 2, append: 3 };
+const APPEND_POOL_MASTER_LEVEL = 37;
+
+function isAppendPool(row) {
+  return (
+    row.difficulty === "append" ||
+    (row.difficulty === "master" && Number(row.play_level) >= APPEND_POOL_MASTER_LEVEL)
+  );
+}
 
 function parseCsvLine(line) {
   const out = [];
@@ -131,25 +139,25 @@ function emitMarkdown(master, append) {
     "",
     "入力用 CSV:",
     "",
-    "- [constants-master-below.csv](constants-master-below.csv) … MASTER以下",
-    "- [constants-append.csv](constants-append.csv) … APPEND",
+    "- [constants-master-below.csv](constants-master-below.csv) … 通常枠（MASTER 36以下）",
+    "- [constants-append.csv](constants-append.csv) … APPEND枠（MASTER 37 を含む。表記は MASTER）",
     "",
     "CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json` に反映します。",
     "",
-    section("MASTER以下", master),
-    section("APPEND", append),
+    section("通常枠", master),
+    section("APPEND枠", append),
   ].join("\n");
 }
 
 function cmdList() {
   const { rows } = loadCatalog();
-  const master = sortCharts(rows.filter((r) => r.difficulty !== "append"));
-  const append = sortCharts(rows.filter((r) => r.difficulty === "append"));
+  const master = sortCharts(rows.filter((r) => !isAppendPool(r)));
+  const append = sortCharts(rows.filter((r) => isAppendPool(r)));
   writeUtf8(masterCsvPath, worksheetLines(master));
   writeUtf8(appendCsvPath, worksheetLines(append));
   writeUtf8(listMdPath, emitMarkdown(master, append));
   console.log(
-    `wrote ${master.length} MASTER以下 + ${append.length} APPEND → data/constants-*.csv, data/constants-by-level.md`,
+    `wrote ${master.length} 通常枠 + ${append.length} APPEND枠 → data/constants-*.csv, data/constants-by-level.md`,
   );
 }
 

@@ -1,5 +1,10 @@
 import { DIFFICULTY_LABEL, DIFFICULTY_SOLID } from "@/lib/charts";
-import { formatPercent, formatRating, type Difficulty } from "@/lib/rating";
+import {
+  formatPercent,
+  formatRating,
+  OVERALL_LABEL,
+  type Difficulty,
+} from "@/lib/rating";
 
 export type BestImageRow = {
   title: string;
@@ -107,11 +112,12 @@ export async function renderBestImage(opts: {
   if (opts.overall) {
     ctx.font = "600 16px 'Noto Sans JP', sans-serif";
     ctx.fillStyle = "#d3c4df";
-    ctx.fillText("総合", pad, pad + 70);
+    ctx.fillText(OVERALL_LABEL, pad, pad + 70);
+    const overallLabelWidth = ctx.measureText(OVERALL_LABEL).width;
     ctx.font = "700 36px ui-monospace, monospace";
     ctx.fillStyle = "#ffffff";
     const overallText = formatRating(opts.overall.average);
-    ctx.fillText(overallText, pad + 52, pad + 74);
+    ctx.fillText(overallText, pad + overallLabelWidth + 16, pad + 74);
   }
 
   const jackets = await Promise.all(
