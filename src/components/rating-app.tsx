@@ -464,3 +464,64 @@ export function RatingApp() {
     </div>
   );
 }
+
+function RatingSummary({
+  title,
+  description,
+  average,
+  used,
+  cap,
+  large = false,
+}: {
+  title: string;
+  description?: string;
+  average: number;
+  used: number | null;
+  cap: number | null;
+  large?: boolean;
+}) {
+  const detail =
+    used != null && cap != null
+      ? (description ? description + "（" : "（") +
+        String(used) +
+        "/" +
+        String(cap) +
+        " 譜面）"
+      : description;
+  return (
+    <Card>
+      <CardHeader>
+        <CardDescription>{title}</CardDescription>
+        <CardTitle
+          className={
+            large
+              ? "font-mono text-4xl tabular-nums sm:text-5xl"
+              : "font-mono text-3xl tabular-nums"
+          }
+        >
+          {formatRating(average)}
+        </CardTitle>
+        {detail ? <CardDescription>{detail}</CardDescription> : null}
+      </CardHeader>
+    </Card>
+  );
+}
+
+function EmptyState({ title, body }: { title: string; body: string }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{body}</CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
+type RankedRow = {
+  chart: Chart;
+  judgement: Judgement;
+  rating: number;
+  achievement: number;
+  constant: number;
+};
