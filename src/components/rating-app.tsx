@@ -124,3 +124,18 @@ function ConstantDisplay({
     </span>
   );
 }
+
+function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
+  return (
+    <Badge
+      variant="outline"
+      className="border-transparent font-semibold text-white shadow-none"
+      style={{
+        background: DIFFICULTY_BG[difficulty],
+        color: "#fff",
+      }}
+    >
+      {DIFFICULTY_LABEL[difficulty]}
+    </Badge>
+  );
+}
