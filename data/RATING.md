@@ -11,8 +11,8 @@
 | `updatedAt` | 最終更新日（表示用） |
 | `otherBestCount` | 通常枠（HARD・EXPERT・MASTER Lv.36以下）のベスト枠数 |
 | `appendBestCount` | APPEND枠（APPEND と MASTER 37。表記は MASTER）のベスト枠数 |
-| `overallOtherWeight` | 総合レートに混ぜる 通常枠の重み（既定 3） |
-| `overallAppendWeight` | 総合レートに混ぜる APPEND枠の重み（既定 2） |
+| `overallOtherWeight` | 総合レートに混ぜる 通常枠の重み（既定 2） |
+| `overallAppendWeight` | 総合レートに混ぜる APPEND枠の重み（既定 1） |
 | `judgementWeights` | 達成率の判定重み（perfect / great / good / bad / miss） |
 | `ratingPoints` | 単曲レートの折れ線。`mode` は `offset`（定数+value）か `absolute`（固定値） |
 

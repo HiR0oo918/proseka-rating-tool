@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-09-17",
-  "otherBestCount": 30,
-  "appendBestCount": 20,
-  "overallOtherWeight": 3,
-  "overallAppendWeight": 2,
+  "updatedAt": "2026-09-18",
+  "otherBestCount": 20,
+  "appendBestCount": 10,
+  "overallOtherWeight": 2,
+  "overallAppendWeight": 1,
   "judgementWeights": {
     "perfect": 100,
     "great": 80,

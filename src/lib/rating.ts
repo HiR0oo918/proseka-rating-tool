@@ -45,10 +45,10 @@ export type Judgement = {
 
 export type ConstantSource = "override" | "csv" | "level";
 
-export const DEFAULT_OTHER_BEST = 30;
-export const DEFAULT_APPEND_BEST = 20;
-export const DEFAULT_OVERALL_OTHER_WEIGHT = 3;
-export const DEFAULT_OVERALL_APPEND_WEIGHT = 2;
+export const DEFAULT_OTHER_BEST = 20;
+export const DEFAULT_APPEND_BEST = 10;
+export const DEFAULT_OVERALL_OTHER_WEIGHT = 2;
+export const DEFAULT_OVERALL_APPEND_WEIGHT = 1;
 
 export type RatingPointMode = "absolute" | "offset";
 
