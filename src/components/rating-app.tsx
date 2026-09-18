@@ -831,3 +831,109 @@ function ChartTable({
     </Table>
   );
 }
+
+function ChartCard({
+  chart,
+  judgement,
+  ratingPoints,
+  judgementWeights,
+  onJudgement,
+  onAp,
+  onClear,
+}: {
+  chart: Chart;
+  judgement: Judgement | undefined;
+  ratingPoints: RatingPoint[];
+  judgementWeights: JudgementWeights;
+  onJudgement: (chart: Chart, patch: Partial<Judgement>) => void;
+  onAp: (chart: Chart) => void;
+  onClear: (chart: Chart) => void;
+}) {
+  const stats = judgement
+    ? scoreJudgement(chart.totalNoteCount, judgement, judgementWeights)
+    : null;
+  const { value, source } = effectiveConstant(chart, null);
+  const rating = stats
+    ? singleRating(value, stats.achievement, ratingPoints)
+    : null;
+  return (
+    <Card size="sm">
+      <CardHeader>
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-1">
+            <CardTitle>{chart.title}</CardTitle>
+            <div className="flex flex-wrap items-center gap-1">
+              <DifficultyBadge difficulty={chart.difficulty} />
+              <span className="text-xs text-muted-foreground">
+                Lv.{chart.playLevel} / {chart.totalNoteCount} notes
+              </span>
+              {judgement && isAllPerfect(chart.totalNoteCount, judgement) ? (
+                <Badge>AP</Badge>
+              ) : judgement && isFullCombo(chart.totalNoteCount, judgement) ? (
+                <Badge variant="secondary">FC</Badge>
+              ) : null}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-mono text-lg tabular-nums">
+              {rating != null ? formatRating(rating) : "—"}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {stats ? formatPercent(stats.achievement) : "未入力"}
+            </div>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-xs text-muted-foreground">定数</span>
+          <ConstantDisplay
+            playLevel={chart.playLevel}
+            value={value}
+            source={source}
+          />
+        </div>
+        <div className="grid grid-cols-5 gap-2 text-center text-[11px] text-muted-foreground">
+          <span>PERFECT {stats ? stats.perfect : "—"}</span>
+          <span>GREAT</span>
+          <span>GOOD</span>
+          <span>BAD</span>
+          <span>MISS</span>
+        </div>
+        <div className="grid grid-cols-5 gap-2">
+          <div />
+          <IntInput
+            aria-label="GREAT"
+            value={judgement?.great ?? 0}
+            onCommit={(great) => onJudgement(chart, { great })}
+          />
+          <IntInput
+            aria-label="GOOD"
+            value={judgement?.good ?? 0}
+            onCommit={(good) => onJudgement(chart, { good })}
+          />
+          <IntInput
+            aria-label="BAD"
+            value={judgement?.bad ?? 0}
+            onCommit={(bad) => onJudgement(chart, { bad })}
+          />
+          <IntInput
+            aria-label="MISS"
+            value={judgement?.miss ?? 0}
+            onCommit={(miss) => onJudgement(chart, { miss })}
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => onAp(chart)}>
+            AP にする
+          </Button>
+          {judgement ? (
+            <Button size="sm" variant="ghost" onClick={() => onClear(chart)}>
+              削除
+            </Button>
+          ) : null}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
