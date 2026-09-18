@@ -1083,3 +1083,156 @@ function BestList({
     </Card>
   );
 }
+
+function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
+  const width = 500;
+  const height = 300;
+  const top = 36;
+  const bottom = 248;
+  const left = 84;
+  const right = 468;
+  const visible = points.filter((point) => point.percent >= 95);
+  const minPercent = Math.min(...visible.map((point) => point.percent));
+  const maxPercent = Math.max(...visible.map((point) => point.percent));
+  const offsets = visible.map((point) =>
+    point.mode === "offset" ? point.value : point.value,
+  );
+  const minOffset = Math.min(...offsets);
+  const maxOffset = Math.max(...offsets);
+  const valueMin = minOffset - 0.4;
+  const valueMax = maxOffset + 0.45;
+  const xOf = (percent: number) =>
+    left +
+    ((percent - minPercent) / Math.max(0.1, maxPercent - minPercent)) *
+      (right - left);
+  const yValue = (point: RatingPoint) =>
+    point.mode === "offset" ? point.value : point.value;
+  const yOf = (value: number) =>
+    top + ((valueMax - value) / (valueMax - valueMin)) * (bottom - top);
+  const plotted = visible.map((point) => ({
+    point,
+    x: xOf(point.percent),
+    y: yOf(yValue(point)),
+    label: describeRatingPoint(point),
+  }));
+  const yTicks = [...new Set(offsets)]
+    .sort((a, b) => b - a)
+    .map((value) => ({
+      value,
+      label: `定数${value > 0 ? "+" : ""}${value}`,
+    }));
+
+  return (
+    <figure className="space-y-2">
+      <div className="overflow-x-auto rounded-lg border bg-muted/20 p-2">
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="mx-auto w-full max-w-[420px]"
+          role="img"
+          aria-label="達成率と単曲レートの境界グラフ"
+        >
+          {yTicks.map((tick) => (
+            <g key={`y-${tick.label}`}>
+              <line
+                x1={left}
+                y1={yOf(tick.value)}
+                x2={right}
+                y2={yOf(tick.value)}
+                className="stroke-border"
+                strokeDasharray="3 5"
+              />
+              <text
+                x={left - 10}
+                y={yOf(tick.value) + 4}
+                textAnchor="end"
+                className="fill-muted-foreground text-[11px]"
+              >
+                {tick.label}
+              </text>
+            </g>
+          ))}
+          <line
+            x1={left}
+            y1={top}
+            x2={left}
+            y2={bottom}
+            className="stroke-muted-foreground"
+          />
+          <line
+            x1={left}
+            y1={bottom}
+            x2={right}
+            y2={bottom}
+            className="stroke-muted-foreground"
+          />
+          <polyline
+            points={plotted.map(({ x, y }) => `${x},${y}`).join(" ")}
+            fill="none"
+            className="stroke-primary"
+            strokeWidth="4"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {plotted.map(({ point, x, y, label }, index) => {
+            const textAnchor =
+              index === 0
+                ? "start"
+                : index === plotted.length - 1
+                  ? "end"
+                  : "middle";
+            return (
+              <g key={point.percent}>
+                <line
+                  x1={x}
+                  y1={y}
+                  x2={x}
+                  y2={bottom}
+                  className="stroke-border"
+                  strokeDasharray="2 4"
+                />
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="6"
+                  className="fill-background stroke-primary"
+                  strokeWidth="4"
+                />
+                <text
+                  x={x}
+                  y={y - 12 - (index % 2) * 14}
+                  textAnchor={textAnchor}
+                  className="fill-foreground text-[12px] font-semibold"
+                >
+                  {label}
+                </text>
+                <text
+                  x={x}
+                  y={bottom + 22}
+                  textAnchor={textAnchor}
+                  className="fill-muted-foreground text-[12px]"
+                >
+                  {point.percent}%
+                </text>
+              </g>
+            );
+          })}
+          <text
+            x={left}
+            y={18}
+            className="fill-muted-foreground text-[12px]"
+          >
+            単曲レート
+          </text>
+          <text
+            x={right}
+            y={bottom + 42}
+            textAnchor="end"
+            className="fill-muted-foreground text-[12px]"
+          >
+            達成率
+          </text>
+        </svg>
+      </div>
+    </figure>
+  );
+}
