@@ -22,6 +22,7 @@ export type Chart = {
 /** MASTER 37 は難易度表記は MASTER のまま、対象枠は APPEND枠。 */
 export const APPEND_POOL_MASTER_LEVEL = 37;
 
+export const APP_NAME = "セカイヘルパーβ";
 export const OVERALL_LABEL = "総合レート";
 export const OTHER_POOL_LABEL = "通常枠";
 export const APPEND_POOL_LABEL = "APPEND枠";

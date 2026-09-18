@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { APP_NAME } from "@/lib/rating";
+
 import "./globals.css";
 
 const notoSans = Noto_Sans_JP({
@@ -11,7 +13,7 @@ const notoSans = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
-  title: "プロセカレーティング",
+  title: APP_NAME,
   description:
     "達成率と譜面定数から非公式レーティングを出します。通常枠と APPEND枠から総合レートも出します。",
 };

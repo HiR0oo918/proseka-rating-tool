@@ -1,5 +1,6 @@
 import { DIFFICULTY_LABEL, DIFFICULTY_SOLID } from "@/lib/charts";
 import {
+  APP_NAME,
   formatPercent,
   formatRating,
   OVERALL_LABEL,
@@ -107,7 +108,7 @@ export async function renderBestImage(opts: {
 
   ctx.fillStyle = "#ffffff";
   ctx.font = "700 32px 'Noto Sans JP', sans-serif";
-  ctx.fillText("プロセカレーティング", pad, pad + 32);
+  ctx.fillText(APP_NAME, pad, pad + 32);
 
   if (opts.overall) {
     ctx.font = "600 16px 'Noto Sans JP', sans-serif";
