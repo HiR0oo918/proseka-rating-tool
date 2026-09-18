@@ -1236,3 +1236,58 @@ function RatingCurveGraph({ points }: { points: RatingPoint[] }) {
     </figure>
   );
 }
+
+function SpecificationsDialog({ settings }: { settings: RatingConfig }) {
+  return (
+    <Dialog>
+      <DialogTrigger render={<Button variant="outline" />}>仕様</DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>仕様</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-3 text-sm">
+          <h3 className="font-medium">計算式</h3>
+          <p>
+            PERFECT = 総ノーツ − GREAT − GOOD − BAD − MISS。各ノーツの重みは均等です。
+          </p>
+          <p className="font-mono text-xs leading-relaxed">
+            達成率 = ({settings.judgementWeights.perfect}×P +{" "}
+            {settings.judgementWeights.great}×GREAT +{" "}
+            {settings.judgementWeights.good}×GOOD +{" "}
+            {settings.judgementWeights.bad}×BAD +{" "}
+            {settings.judgementWeights.miss}×MISS) / (
+            {settings.judgementWeights.perfect}×総ノーツ)
+            <br />
+            上限 100%
+            <br />
+            単曲レート = 下記境界を線形補間
+            <br />
+            通常枠レート = HARD・EXPERT・MASTER（Lv.36以下）の上位{" "}
+            {settings.otherBestCount} 譜面の平均
+            <br />
+            APPEND枠レート = APPEND と MASTER 37（表記は MASTER）の上位{" "}
+            {settings.appendBestCount} 譜面の平均
+            <br />
+            総合レート = (通常枠×{settings.overallOtherWeight} + APPEND枠×
+            {settings.overallAppendWeight}) ÷{" "}
+            {settings.overallOtherWeight + settings.overallAppendWeight}
+          </p>
+          <RatingCurveGraph points={settings.ratingPoints} />
+        </div>
+        <div className="space-y-3 border-t pt-4">
+          <h3 className="font-medium">共通設定</h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1">
+              <Label>通常枠の譜面数</Label>
+              <p className="tabular-nums text-sm">{settings.otherBestCount}</p>
+            </div>
+            <div className="space-y-1">
+              <Label>APPEND枠の譜面数</Label>
+              <p className="tabular-nums text-sm">{settings.appendBestCount}</p>
+            </div>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
