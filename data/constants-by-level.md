@@ -346,3 +346,240 @@ CSV を埋めたら `npm run constants:apply` で `charts.csv` と `charts.json`
 - MASTER About me `29.1`  `3215`
 - MASTER Bad ∞ End ∞ Night `29.6`  `1390`
 - MASTER Bad Apple!! feat.SEKAI `29.5`  `2505`
+- MASTER Be The MUSIC! `29.5`  `1680`
+- MASTER Beat Eater `29.7`  `780`
+- MASTER Blue Star `29.4`  `1710`
+- MASTER Booo! `29.6`  `1600`
+- MASTER Cool Me Down `29.2`  `2125`
+- MASTER CRASH THE PARTY `29.1`  `3395`
+- MASTER DAYBREAK FRONTLINE `29.5`  `1265`
+- MASTER DREAM PLACE `29.6`  `1260`
+- MASTER drop pop candy `29.8`  `75`
+- MASTER erase or zero `29.1`  `3465`
+- MASTER Fire◎Flower (Rerec) `29.2`  `2680`
+- MASTER Flyer! `29.4`  `910`
+- MASTER Flyway `29.6`  `1550`
+- MASTER FREELY TOMORROW `29.4`  `1565`
+- MASTER FUN!! `29.3`  `2875`
+- MASTER Gimme×Gimme `29.8`  `415`
+- MASTER Hello Builder `29.5`  `1935`
+- MASTER Hello,world! `29.6`  `920`
+- MASTER Henceforth `29.3`  `2420`
+- MASTER Journey `29.6`  `1175`
+- MASTER Leia - Remind `29.5`  `425`
+- MASTER Miku `29.5`  `765`
+- MASTER needLe `29.6`  `315`
+- MASTER NEO `29.1`  `1830`
+- MASTER Nostalogic `29.6`  `65`
+- MASTER ODDS＆ENDS `29.7`  `585`
+- MASTER p.h. `29.5`  `1485`
+- MASTER PaⅢ.SENSATION `29.7`  `975`
+- MASTER potatoになっていく `29.6`  `260`
+- MASTER QUEEN `29.4`  `2530`
+- MASTER Ready Steady `29.6`  `270`
+- MASTER SToRY `29.5`  `2870`
+- MASTER Surges `29.4`  `3160`
+- MASTER UNDERWATER `29.2`  `1815`
+- MASTER YY `29.8`  `1330`
+- MASTER アイ `29.2`  `3080`
+- MASTER アイドル新鋭隊 `29.5`  `285`
+- MASTER あいのうた `29.3`  `2335`
+- MASTER アイムマイン `29.5`  `1840`
+- MASTER アイリッド `29.4`  `2800`
+- MASTER アコトバ `29.2`  `2415`
+- MASTER アスノヨゾラ哨戒班 `29.6`  `90`
+- MASTER あったかいと `29.4`  `1355`
+- MASTER あなたしか見えないの `29.2`  `3410`
+- MASTER アリア `29.2`  `3600`
+- MASTER いかないで `29.8`  `600`
+- MASTER ヴィラン `29.7`  `850`
+- MASTER エイリアンエイリアン `29.5`  `1230`
+- MASTER えれくとりっく・えんじぇぅ `29.2`  `2270`
+- MASTER エンパープル `29.3`  `2535`
+- MASTER オツキミリサイタル `29.3`  `3820`
+- MASTER おどロボ `29.2`  `2305`
+- MASTER お気に召すまま `29.7`  `530`
+- MASTER カトラリー `29.6`  `555`
+- MASTER カラフルファンデーション `29.2`  `3415`
+- MASTER カンタレラ `29.8`  `1480`
+- MASTER くうになる `29.4`  `2085`
+- MASTER コールボーイ `29.2`  `2525`
+- MASTER このふざけた素晴らしき世界は、僕の為にある `29.2`  `3125`
+- MASTER サンドリヨン 10th Anniversary `29.9`  `520`
+- MASTER シティライツ `（未設定 → 仮 29.5）`  `3955`
+- MASTER シネマ `29.8`  `630`
+- MASTER ジャックポットサッドガール `29.8`  `310`
+- MASTER スーパーヒーロー `29.4`  `2475`
+- MASTER スター `29.3`  `2850`
+- MASTER スターナイトスノウ `29.4`  `3070`
+- MASTER スノーマン `29.8`  `1715`
+- MASTER セカイはまだ始まってすらいない `29.5`  `255`
+- MASTER その音が鳴るなら `29.5`  `2730`
+- MASTER それでもいいんだよ `29.7`  `1370`
+- MASTER だれかの心臓になれたなら `29.8`  `760`
+- MASTER テトリス `29.2`  `3135`
+- MASTER デビルじゃないもん `29.5`  `2060`
+- MASTER テレキャスタービーボーイ `29.6`  `670`
+- MASTER デロスサントス `29.3`  `3970`
+- MASTER ドーナツホール 2024 `29.7`  `1100`
+- MASTER とても素敵な六月でした `29.3`  `1700`
+- MASTER とびだせ！わんだぴょい `29.2`  `3300`
+- MASTER ドラマツルギー `29.6`  `455`
+- MASTER ドリーム・キス `29.1`  `3480`
+- MASTER ナンセンス文学 `29.6`  `790`
+- MASTER ニジイロストーリーズ `29.7`  `515`
+- MASTER ハウトゥー世界征服 `29.0`  `3360`
+- MASTER ハオ `29.5`  `3620`
+- MASTER はぐ `29.1`  `2145`
+- MASTER はしる! とおく! とどく! `29.2`  `2490`
+- MASTER バレリーコ `29.4`  `2945`
+- MASTER ビバハピ `29.6`  `55`
+- MASTER ファイアダンス `29.3`  `2880`
+- MASTER フィラメントフィーバー `29.3`  `1985`
+- MASTER フォニイ `29.7`  `1385`
+- MASTER フューエル `29.3`  `2390`
+- MASTER ブレス・ユア・ブレス `29.8`  `360`
+- MASTER プロポーズ `29.4`  `3670`
+- MASTER ベノム `29.8`  `725`
+- MASTER ボッカデラベリタ `29.9`  `625`
+- MASTER マーシャル・マキシマイザー `29.2`  `2050`
+- MASTER マシュマリー `29.6`  `785`
+- MASTER まにまに `29.4`  `2005`
+- MASTER マリオネットダンサー `29.5`  `3195`
+- MASTER ㋰責任集合体 `29.2`  `3335`
+- MASTER メインキャラクター `29.3`  `2705`
+- MASTER メリーゴーラウンド `29.3`  `2585`
+- MASTER メルト `29.5`  `235`
+- MASTER モザイクロール (Reloaded) `29.7`  `2385`
+- MASTER モニタリング `29.4`  `3140`
+- MASTER ラブカ？ `29.6`  `1300`
+- MASTER ラプス `29.5`  `3790`
+- MASTER ラムネ `29.0`  `3510`
+- MASTER リアライズ `29.5`  `1780`
+- MASTER リモコン `29.2`  `730`
+- MASTER リリィララ `29.2`  `3275`
+- MASTER ルカルカ★ナイトフィーバー `29.5`  `1080`
+- MASTER レグルス `29.2`  `2115`
+- MASTER レッドランドマーカー `29.5`  `2310`
+- MASTER ロキ `29.6`  `10`
+- MASTER ロストエンファウンド `29.7`  `1130`
+- MASTER ワールドイズマイン `29.4`  `240`
+- MASTER ワーワーワールド `29.7`  `385`
+- MASTER 阿吽のビーツ `29.6`  `1225`
+- MASTER 悪食娘コンチータ `29.4`  `1745`
+- MASTER 悪役にキスシーンを `29.4`  `1885`
+- MASTER 雨とペトラ `29.3`  `1050`
+- MASTER 花結び `29.5`  `3475`
+- MASTER 花溺れ `29.4`  `2785`
+- MASTER 花弁、それにまつわる音声 `29.2`  `3190`
+- MASTER 快晴 `29.7`  `1615`
+- MASTER 幾望の月 `29.5`  `2280`
+- MASTER 偽物人間40号 `29.2`  `2855`
+- MASTER 吉原ラメント 再来盤 `29.4`  `2955`
+- MASTER 虚無さん `29.2`  `2700`
+- MASTER 金木犀 `29.2`  `2090`
+- MASTER 空想フォレスト `29.1`  `3765`
+- MASTER 携帯恋話 `29.7`  `305`
+- MASTER 結ンデ開イテ羅刹ト骸 `29.5`  `2835`
+- MASTER 月光 `29.6`  `1195`
+- MASTER 光 `29.5`  `3770`
+- MASTER 好き！雪！本気マジック `29.3`  `3055`
+- MASTER 鎖の少女-Re Alive- `29.3`  `3490`
+- MASTER 失敗作少女 `29.3`  `2550`
+- MASTER 終焉逃避行 `29.4`  `2735`
+- MASTER 初めての恋が終わる時 `29.2`  `2035`
+- MASTER 深海シティアンダーグラウンド `29.4`  `3225`
+- MASTER 神っぽいな `29.4`  `1925`
+- MASTER 神のまにまに `29.6`  `1005`
+- MASTER 星空オーケストラ `29.6`  `1410`
+- MASTER 天ノ弱 `29.7`  `1445`
+- MASTER 天樂 `29.5`  `1860`
+- MASTER 転生林檎 `29.3`  `2665`
+- MASTER 透過する温度 `29.4`  `3580`
+- MASTER 透明なパレット `29.5`  `3230`
+- MASTER 如月アテンション `29.4`  `2555`
+- MASTER 熱風 `29.3`  `2445`
+- MASTER 白い雪のプリンセスは `29.7`  `1775`
+- MASTER 名も無き革命 `29.5`  `1795`
+- MASTER 幽光、1/fのゆらめき `29.3`  `2135`
+- MASTER 踊 `29.8`  `1025`
+- MASTER 惑星ループ `29.0`  `3450`
+- MASTER 傀儡のうつつ `29.5`  `3675`
+- MASTER 嗚呼、素晴らしきニャン生 `29.9`  `1730`
+- EXPERT ANiMA `29.5`  `3724`
+- EXPERT Sage `29.0`  `2239`
+- EXPERT 星界ちゃんと可不ちゃんのおつかい合騒曲 `29.9`  `1639`
+- EXPERT 生命性シンドロウム `29.8`  `2714`
+- EXPERT 六兆年と一夜物語 `29.7`  `674`
+
+### Lv.28
+
+- MASTER 『んっあっあっ。』 `28.2`  `2150`
+- MASTER 1000年生きてる `28.4`  `2170`
+- MASTER 1925 `28.6`  `1530`
+- MASTER 39みゅーじっく！ `28.5`  `225`
+- MASTER 8.32 `28.2`  `3145`
+- MASTER Beyond the way `28.3`  `1990`
+- MASTER Call!! `28.6`  `2970`
+- MASTER CH4NGE `28.2`  `2565`
+- MASTER Change me `28.5`  `1325`
+- MASTER Color of Drops `28.8`  `445`
+- MASTER CR詠ZY `28.7`  `2105`
+- MASTER Dear `28.6`  `1950`
+- MASTER Forward `28.8`  `275`
+- MASTER Gimme more! `28.3`  `3780`
+- MASTER Hand in Hand `28.5`  `220`
+- MASTER Hello, Worker `28.6`  `1430`
+- MASTER Highlight `28.4`  `1315`
+- MASTER JUMPIN’ OVER ! `28.5`  `2110`
+- MASTER Just Be Friends `28.5`  `135`
+- MASTER LEADER `28.4`  `2300`
+- MASTER Peaky Peaky `28.7`  `1035`
+- MASTER purpose `28.4`  `1915`
+- MASTER Q `28.4`  `1010`
+- MASTER Saika `28.7`  `3740`
+- MASTER shake it! `28.3`  `2750`
+- MASTER Snow Fairy Story `28.1`  `3060`
+- MASTER Supernova `28.5`  `2285`
+- MASTER Sympathy `28.2`  `3025`
+- MASTER Twilight Melody `28.4`  `2225`
+- MASTER ULTRA C `28.4`  `2355`
+- MASTER Un-Lock `28.8`  `1965`
+- MASTER Unpoison `28.5`  `2635`
+- MASTER WAVE `28.7`  `2610`
+- MASTER Wonder Style `28.4`  `1810`
+- MASTER Worlders `28.3`  `2895`
+- MASTER アイディスマイル `28.6`  `580`
+- MASTER アイロニ `28.7`  `1465`
+- MASTER あの夏が飽和する。 `28.4`  `3250`
+- MASTER ありのままのストーリーを `28.2`  `3175`
+- MASTER アンチユー `28.4`  `2910`
+- MASTER いーあるふぁんくらぶ `28.5`  `870`
+- MASTER インテグラル `28.2`  `2120`
+- MASTER うっせぇわ `28.5`  `1020`
+- MASTER ウミユリ海底譚 `28.6`  `375`
+- MASTER エンヴィーベイビー `28.4`  `2010`
+- MASTER ガーネットの涙 `28.3`  `2330`
+- MASTER ガランド `28.7`  `1000`
+- MASTER カルチャ `28.3`  `2645`
+- MASTER きみとぼくのレゾナンス `28.2`  `2615`
+- MASTER キャットフード `28.6`  `2650`
+- MASTER きょうもハレバレ `28.7`  `2465`
+- MASTER ココロ `28.8`  `1560`
+- MASTER こちら、幸福安心委員会です。 `28.5`  `1395`
+- MASTER このまんまでいこう `28.4`  `3210`
+- MASTER サイハテ `28.2`  `2780`
+- MASTER サマータイムレコード `28.4`  `1975`
+- MASTER ジウダス `28.6`  `1075`
+- MASTER シャルル `28.4`  `95`
+- MASTER ストロボラスト `28.5`  `1525`
+- MASTER スマイル*シンフォニー `28.4`  `2885`
+- MASTER だんだん早くなる `28.5`  `2425`
+- MASTER ツギハギスタッカート `28.5`  `355`
+- MASTER トキヲ・ファンカ `28.8`  `750`
+- MASTER とても痛い痛がりたい `28.8`  `470`
+- MASTER トラフィック・ジャム `28.8`  `715`
+- MASTER ドリーマーズビート `28.7`  `3715`
+- MASTER トリコロージュ `28.8`  `1015`
+- MASTER ド屑 `28.4`  `2275`
+- MASTER ハイドアンド・シーク `28.0`  `2190`
