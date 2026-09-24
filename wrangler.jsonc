@@ -12,6 +12,8 @@
   "observability": {
     "enabled": true,
   },
+  // フィードバック用。値は `wrangler secret put DISCORD_WEBHOOK_URL` か
+  // Cloudflare ダッシュボードのシークレットに置く。ここには書かない。
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",

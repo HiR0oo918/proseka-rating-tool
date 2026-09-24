@@ -1,0 +1,3 @@
+# フィードバック用。値は Discord のチャンネル設定 → 連携サービス → ウェブフック の URL。
+# このファイルをコピーして `.dev.vars` または `.env.local` に置く。リポジトリに実 URL を入れない。
+DISCORD_WEBHOOK_URL=
