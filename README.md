@@ -37,7 +37,24 @@ npm install
 npm run dev
 ```
 
-ブラウザで表示された URL を開きます。リザルトはブラウザの localStorage に保存されます。書き出し / 読み込みで JSON バックアップできます。ベスト内訳から、ジャケット付きのベスト枠画像を PNG で保存できます。
+ブラウザで表示された URL を開きます。リザルトはブラウザの localStorage に保存されます。書き出し / 読み込みで JSON バックアップできます。ベスト内訳から、ジャケット付きのベスト枠画像を PNG で保存できます。画面の「フィードバック」から不具合や要望を送れます（リザルトは付きません）。
+
+## フィードバック（Discord）
+
+送信先は Discord の Incoming Webhook です。URL はリポジトリに書かず、環境変数 `DISCORD_WEBHOOK_URL` に置きます。
+
+手元（`npm run dev`）:
+
+1. Discord のチャンネル設定 → 連携サービス → ウェブフック で URL を作る
+2. [`.dev.vars.example`](.dev.vars.example) を `.env.local` か `.dev.vars` にコピーして URL を入れる
+3. 未設定のときは送信は成功扱いになり、サーバーのコンソールに内容だけ出ます
+
+Cloudflare（Worker 名 `prod`）:
+
+- ダッシュボードの変数 / シークレットに `DISCORD_WEBHOOK_URL` を入れる
+- 未設定の公開サイトでは「今は受け付けていません」と出ます
+
+同じ接続からは 10 分で 5 件までです。
 
 ## Cloudflare Workers
 
