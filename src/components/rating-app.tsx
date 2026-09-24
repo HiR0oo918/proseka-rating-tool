@@ -1007,7 +1007,8 @@ function BestList({
             cap: settings.appendBestCount,
             rows: imageRows(appendRows),
           },
- mar      });
+        ],
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
