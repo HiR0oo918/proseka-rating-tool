@@ -11,7 +11,7 @@
 | `chart_id` | 譜面レコード ID |
 | `music_id` | 楽曲 ID |
 | `title` | 曲名 |
-| `pronunciation` | 読み（検索用） |
+| `pronunciation` | 読み（かな検索・ローマ字検索用） |
 | `difficulty` | `hard` / `expert` / `master` / `append` など |
 | `play_level` | 公式の整数レベル |
 | `chart_constant` | 非公式定数。管理者がこの列で全員共通の値を入れる。空欄なら公式レベル.5 |
