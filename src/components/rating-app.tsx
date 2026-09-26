@@ -605,7 +605,6 @@ function PoolPanels({
             <Label htmlFor={`search-${pool}`}>曲名 / 読み</Label>
             <Input
               id={`search-${pool}`}
-              placeholder="例: ヒバナ、hibana、hatsune"
               value={query}
               onChange={(e) => onQuery(e.target.value)}
             />
